@@ -239,7 +239,7 @@ int main(void) {
 		
 		if (_kbhit()) {
 			nKey = _getch();
-			if (nKey == 13) {
+			if (nKey == '\r') {
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 				PlaySound(TEXT("Festival_of_Ghost.wav"), NULL, SND_ASYNC | SND_LOOP);
 			}
