@@ -236,22 +236,22 @@ void Release() {
 }
 
 int main(void) {
-	int nKey;
+	char nKey;
 	ScreenInit();
 	init(); // 초기화
 	PlaySound(TEXT("opening.wav"), NULL, SND_ASYNC | SND_LOOP);
 	while (1) {
 		
-		if (_kbhit()) {
+		if (_kbhit()) { // 와일문이 끝날 때 까지 키보드 입력을 대기 함
 			nKey = _getch();
-			if (nKey == 13) {
-				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
-				PlaySound(TEXT("Festival_of_Ghost.wav"), NULL, SND_ASYNC | SND_LOOP);
-			}
-			if (nKey == 'p') {
-				Stage = PAUSE;
-			}
 			switch (nKey) {
+			case '\r':	// 엔터 입력 시 running시작 음악 호출
+				Stage = RUNNING; 
+				PlaySound(TEXT("Festival_of_Ghost.wav"), NULL, SND_ASYNC | SND_LOOP);
+				break;
+			case 'p': // Stage 변수를 PAUSE 로 바꾼 후 일시정지상태 로 만듬
+				Stage = PAUSE;
+				break;
 			case 'a':
 				CheckA(n);
 				break;
@@ -270,7 +270,6 @@ int main(void) {
 			case 'l':
 				CheckL(n);
 				break;
-
 			}
 		}
 
