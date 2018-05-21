@@ -186,25 +186,27 @@ void Update() {
 
 clock_t Oldtime1 = 0;
 void Render() {
-	clock_t Curtime = clock(); // 0.5초 마다 1colum씩 내린다.
+	clock_t Curtime = clock(); // 지금까지 흐른 시간
 	ScreenClear();
 	//출력코드
 	Map();
 	ScoreMap();
 	switch (Stage) {
-	case READY :
+	case READY ://대기상태
 		Oldtime1 = Curtime;
 		ReadyMap();
 		if (Curtime % 1000 > 500) {
 			ReadyMap1();
-		}
+		}//0.5초 단위로 화면을 출력
 		break;
-	case PAUSE:
+	//case PAUSE: 아직 구현하지 않음 추후에 구현해야됨
 	case RUNNING :
-		if (RunningTime > 3100) {
-			if (Curtime - Control.OldTime > Control.MovTime) {
+		if (RunningTime > 3100) //3초 이후부터
+		{
+			if (Curtime - Control.OldTime > Control.MovTime) 
+			{
 				Control.OldTime = Curtime;
-				n++;
+				n++;//노트가 저장된 배열의 인덱스를 증가
 			}
 			ShowNote(n);
 		}
