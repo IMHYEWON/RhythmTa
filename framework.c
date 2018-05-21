@@ -239,7 +239,7 @@ int main(void) {
 			if (nKey == 'p') {
 				Stage = PAUSE;
 			}
-		    if (nKey=='a' || nKey=='s' || nKey=='d' || nKey=='j' || nKey=='k' || nKey=='l'){
+			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				CheckKey(nKey);
 			}
 		}
@@ -329,12 +329,9 @@ void NoteCheck(void) {
 	Note[478 + Control.nMagic] = nKeyA;
 }
 
-
-// 충돌처리
-// main에서 해당 키 입력시 호출되는 함수들
-
-void CheckKey(int nKey) {
-	char *KeyType; // 입력한 키의 종류
+// 키의 문자열 포인터를 반환해주는 함수
+char *GetKeyType(int nKey) {
+	char *KeyType;
 	switch (nKey) {
 	case 'a':
 		KeyType = nKeyA;
@@ -355,15 +352,24 @@ void CheckKey(int nKey) {
 		KeyType = nKeyL;
 		break;
 	default:
-		KeyType = " ";
+		KeyType = nKeyNone;
 		break;
 	}
+	return KeyType;
+}
+
+// 충돌처리
+// main에서 해당 키 입력시 호출되는 함수
+
+void CheckKey(int nKey) {
+	char *KeyType; // 입력한 키의 종류
+	KeyType = GetKeyType(nKey);
 	if (strcmp(Note[n], KeyType) == 0) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
 		sprintf(strScore, "%s", "★Perfect★");
 	}
-	else if ((n>0 && strcmp(Note[n-1], KeyType) == 0) || strcmp(Note[n + 1], KeyType) == 0) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+	else if ((n > 0 && strcmp(Note[n - 1], KeyType) == 0) || strcmp(Note[n + 1], KeyType) == 0) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
 		sprintf(strScore, "%s", "★Great★");
