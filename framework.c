@@ -58,23 +58,23 @@ void Map(void) {
 // 우측 점수 출력틀
 void ScoreMap() {
 	// 경과시간
-	char nTime[20];
+	char nTime[20];//경과 시간을 나타낸다
 	sprintf(nTime, "시간 : %d.%d초", RunningTime / 1000, RunningTime % 1000);
 	ScreenPrint(44, 2, nTime);
 	// 점수 목록
-	ScreenPrint(44, 10, strScore);
+	ScreenPrint(44, 10, strScore);//Great,Perfect판별
 	ScreenPrint(44, 22, "Great : 300점");
 	ScreenPrint(44, 23, "Perfect : 500점");
 	//ScreenPrint(44, 25, "\'p\' to Pause");
 	// 점수
-	char nScoree[20];
-	sprintf(nScoree, "점수 : %d 점", nScore);
-	ScreenPrint(44, 4, nScoree);
+	char UserScore[20];//사용자 점수를 나타냄
+	sprintf(UserScore, "점수 : %d 점", nScore);
+	ScreenPrint(44, 4, UserScore);
 	ScreenPrint(44, 27, "<<< 히트 구간(G)");
 	ScreenPrint(44, 28, "<<< 히트 구간(P)");
 	ScreenPrint(44, 29, "<<< 히트 구간(G)");
 	//콤보
-	char strCombo[20];
+	char strCombo[20];//콤보를 나타낸다
 	sprintf(strCombo, "%d 콤보", nCombo);
 	ScreenPrint(44, 13, strCombo);
 }
