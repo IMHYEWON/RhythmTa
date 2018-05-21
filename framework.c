@@ -100,7 +100,9 @@ void ReadyMap() {
 
 // Render함수에서 깜빡이면서 출력
 void ReadyMap1() {
+	SetColor(10);
 	ScreenPrint(10, 15, "Press Enter to Start");
+	SetColor(15);
 }
 
 
