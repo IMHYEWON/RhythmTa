@@ -144,14 +144,14 @@ void CheckKey(int nKey);
 void init() {
 	Control.MovTime = 52;
 	Control.OldTime = 0;
-	Control.nMagic = 0;
+	Control.nMagic = 1;
 	Stage = READY;
-	NoteCheck();
+	
 	for (int i = 0; i < ALLNOTE; i++) {
 		Note[i] = " ";
 	}
 	RunningTime = 0;
-
+	NoteCheck();
 	Count.nXofA = 2;   //(2,29)
 	Count.nXofS = 8;
 	Count.nXofD = 14;
@@ -159,7 +159,7 @@ void init() {
 	Count.nXofK = 27;
 	Count.nXofL = 33;
 
-	Stage = READY;
+	//Stage = READY;
 
 }
 
@@ -167,7 +167,7 @@ void init() {
 clock_t Oldtime = 0;
 void Update() {
 	clock_t Curtime = clock();
-	Control.nMagic = 1;
+	//Control.nMagic = 1;
 	switch (Stage) {
 	case READY :
 		Oldtime = Curtime;
@@ -179,7 +179,7 @@ void Update() {
 	case PAUSE:
 		break;
 	}
-	NoteCheck();
+	//NoteCheck();
 }
 
 
