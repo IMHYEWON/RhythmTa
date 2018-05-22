@@ -6,20 +6,38 @@
 #include<ctype.h>
 #include<windows.h>
 #include<time.h>
-#include"Screen.h""
+#include"Screen.h"
 #include "Note.h"
 #include<memory.h>
 #include<conio.h>
 #include<string>
+#include"fmod.hpp"
 
 using namespace std;
+using namespace FMOD;
 
 #define ALLNOTE 1000
 //
-// 소리 출력 PlaySound함수
-#include<mmsystem.h>
-#pragma comment(lib, "winmm.lib")
-//PlaySound(TEXT("Festival_of_Ghost.wav"), NULL, SND_ASYNC | SND_LOOP);
+
+System* pSystem;
+Sound* pSound[2];
+Channel* pChannel[1];
+
+void SoundSystem() {
+	System_Create(&pSystem);
+
+	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
+
+	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 배경음악
+	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 배경음악
+}
+
+void Play(int Sound_num) {
+
+	pSystem->playSound(FMOD_CHANNEL_FREE, pSound[Sound_num], 0, pChannel);
+
+}
+
 //
 int n = 0;
 
@@ -28,6 +46,9 @@ char strScore[20] = "  ";
 int nCombo = 0;
 //
 clock_t RunningTime;
+clock_t PauseStart;
+clock_t PauseEnd;
+clock_t PauseTime = 0;
 
 // 노트 판별 존
 typedef struct _NOTECOUNT {
@@ -178,7 +199,7 @@ void Update() {
 		break;
 	case RUNNING:
 		// 게임 시작 후 시간 측정변수
-		RunningTime = clock() - Oldtime;
+		RunningTime = Curtime - Oldtime - PauseTime;
 		break;
 	case PAUSE:
 		break;
@@ -205,7 +226,8 @@ void Render() {
 			ReadyMap1();
 		}//0.5초 단위로 화면을 출력
 		break;
-	//case PAUSE: 아직 구현하지 않음 추후에 구현해야됨
+	case PAUSE:
+		return;
 	case RUNNING :
 		if (RunningTime > 3100) //3초 이후부터
 		{
@@ -233,21 +255,34 @@ void Release() {
 }
 int main(void) {
 	int nKey;
+	SoundSystem(); // FMOD 사용 준비
 	ScreenInit();
 	init(); // 초기화
-	PlaySound(TEXT("opening.wav"), NULL, SND_ASYNC | SND_LOOP);
+	Play(0);
 	while (1) {
-		
 		if (_kbhit()) {
 			nKey = _getch();
 			if (nKey == '\r') {
+				if (Stage == READY) {
+					pChannel[0]->stop();
+					Play(1);
+				}
+				else if (Stage == PAUSE) {
+					PauseEnd = clock();
+					PauseTime += PauseEnd - PauseStart;
+					pChannel[0]->setPaused(false);
+				}
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
-				PlaySound(TEXT("Festival_of_Ghost.wav"), NULL, SND_ASYNC | SND_LOOP);
 			}
 			if (nKey == 'p') {
-				Stage = PAUSE;
+				if (Stage == RUNNING) {
+					PauseStart = clock();
+					pChannel[0]->setPaused(true);
+					Stage = PAUSE;
+				}
 			}
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
+				if (Stage == PAUSE) continue;
 				CheckKey(nKey);
 			}
 		}
