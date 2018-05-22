@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Screen.c">
+    <ClCompile Include="framework.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="framework.c">
+    <ClCompile Include="Note.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Note.c">
+    <ClCompile Include="Screen.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
