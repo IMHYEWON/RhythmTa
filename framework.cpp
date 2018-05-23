@@ -305,71 +305,198 @@ void NoteCheck(void) {
 	for (int i = 0; i < 30; i++) {
 		Note[i] = " ";
 	}
-	Note[30+Control.nMagic] = nKeyL;
-	Note[40 + Control.nMagic] = nKeyD;
-	Note[50 + Control.nMagic] = nKeyL;
-	Note[60 + Control.nMagic] = nKeyS;
-	Note[70 + Control.nMagic] = nKeyL;
-	Note[80 + Control.nMagic] = nKeyD;
-	Note[90 + Control.nMagic] = nKeyL;
-	Note[100 + Control.nMagic] = nKeyS;
-	Note[110 + Control.nMagic] = nKeyL;
-	Note[120 + Control.nMagic] = nKeyD;
-	Note[130 + Control.nMagic] = nKeyL;
-	Note[140 + Control.nMagic] = nKeyS;
-	Note[153 + Control.nMagic] = nKeyL;
-	Note[163 + Control.nMagic] = nKeyD;
-	Note[173 + Control.nMagic] = nKeyL;
-	Note[183 + Control.nMagic] = nKeyS;
-	Note[195 + Control.nMagic] =  nKeyAJ;   // 14초 경과
-	Note[210 + Control.nMagic] = nKeySK;
-	Note[215 + Control.nMagic] = nKeyDL;
-	Note[220 + Control.nMagic] = nKeySK;
-	Note[225 + Control.nMagic] = nKeyAJ;
-	Note[230 + Control.nMagic] = nKeySK;
-	Note[235 + Control.nMagic] = nKeyDL;
-	Note[253 + Control.nMagic] = nKeySK;
-	Note[255 + Control.nMagic] = nKeyAJ;
 
-	Note[268 + Control.nMagic] = nKeyDL;
-	Note[272 + Control.nMagic] = nKeySK;
-	Note[276 + Control.nMagic] = nKeyAJ;
-	Note[280 + Control.nMagic] = nKeyD;    // 22초
+	for (int i = 0; i < 121; i += 40)
+	{
+		Note[30 + i + Control.nMagic] = nKeyL;
+		Note[40 + i + Control.nMagic] = nKeyD;
+		Note[50 + i + Control.nMagic] = nKeyL;
+		Note[60 + i + Control.nMagic] = nKeyS;
+	}
+	///////////// L > D > L > S ///// 10간격으로 4번 반복 
 
-	Note[297 + Control.nMagic] = nKeySK;
-	Note[304 + Control.nMagic] = nKeyDL;
-	Note[308 + Control.nMagic] = nKeySK;
-	Note[312 + Control.nMagic] = nKeyDL;
-	Note[316 + Control.nMagic] = nKeySK;
-	Note[320 + Control.nMagic] = nKeyAJ;
+	Note[195 + Control.nMagic] = nKeyAJ;  // 14초 경과
 
-	Note[338 + Control.nMagic] = nKeyL;
-	Note[340 + Control.nMagic] = nKeyK;
-	Note[342 + Control.nMagic] = nKeyJ;
-	Note[351 + Control.nMagic] = nKeyA; // 26초 경과
-	
-	Note[362 + Control.nMagic] = nKeyS;
-	Note[367 + Control.nMagic] = nKeyDL;
-	Note[374 + Control.nMagic] = nKeyS;
-	Note[379 + Control.nMagic] = nKeyDL;
-	Note[386 + Control.nMagic] = nKeyS;
-	Note[391 + Control.nMagic] = nKeyDL;
-	Note[398 + Control.nMagic] = nKeyS;
-	Note[402 + Control.nMagic] = nKeyA;
+	Note[208 + Control.nMagic] = nKeySK;
+	Note[213 + Control.nMagic] = nKeyDL;
+	Note[218 + Control.nMagic] = nKeySK;
+	Note[223 + Control.nMagic] = nKeyAJ;
+	Note[228 + Control.nMagic] = nKeySK;
+	Note[233 + Control.nMagic] = nKeyDL;
+
+	Note[250 + Control.nMagic] = nKeySK;
+	Note[252 + Control.nMagic] = nKeyAJ;
+
+	Note[266 + Control.nMagic] = nKeyDL;
+	Note[279 + Control.nMagic] = nKeySK;
+	Note[274 + Control.nMagic] = nKeyAJ;
+	Note[278 + Control.nMagic] = nKeyDL;    // 22초
+
+	Note[295 + Control.nMagic] = nKeySK;
+
+	Note[302 + Control.nMagic] = nKeyDL;
+	Note[306 + Control.nMagic] = nKeySK;
+	Note[310 + Control.nMagic] = nKeyDL;
+	Note[314 + Control.nMagic] = nKeySK;
+	Note[318 + Control.nMagic] = nKeyAJ;
+
+	//연속구간
+
+	for (int i = 0; i < 7; i++)
+	{
+		Note[320 + i + Control.nMagic] = nKeyAJ;
+	}
+
+	Note[334 + Control.nMagic] = nKeyL;
+	Note[336 + Control.nMagic] = nKeyK;
+	Note[338 + Control.nMagic] = nKeyJ;
+
+	//Note[351 + Control.nMagic] = nKeyA; // 26초 경과
+
+	Note[353 + Control.nMagic] = nKeyS; //S
+	Note[358 + Control.nMagic] = nKeyDL;
+	Note[365 + Control.nMagic] = nKeyS; //S
+	Note[370 + Control.nMagic] = nKeyDL;
+	Note[377 + Control.nMagic] = nKeyS;
+	Note[382 + Control.nMagic] = nKeyDL;
+	Note[389 + Control.nMagic] = nKeyS;
+	//Note[402 + Control.nMagic] = nKeyA;
 	// 406 +42
-	Note[362+42 + Control.nMagic] = nKeyS;
-	Note[367 + 42 + Control.nMagic] = nKeyDL;
-	Note[374 + 42 + Control.nMagic] = nKeyS;
-	Note[379 + 42 + Control.nMagic] = nKeyDL;
-	Note[386 + 42 + Control.nMagic] = nKeyS;
-	Note[391 + 42 + Control.nMagic] = nKeyDL;
-	Note[398 + 44 + Control.nMagic] = nKeyS;
-	Note[402 + 48 + Control.nMagic] = nKeyA;
+	Note[400 + Control.nMagic] = nKeyS;
+	Note[404 + Control.nMagic] = nKeyDL;
+	Note[409 + Control.nMagic] = nKeyS;
+	Note[413 + Control.nMagic] = nKeyDL;
+	Note[418 + Control.nMagic] = nKeyS;
+	Note[422 + Control.nMagic] = nKeyDL;
+	//Note[398 + 42 + Control.nMagic] = nKeyS;
 
-	Note[464 + Control.nMagic] = nKeyJ;
-	Note[465 + Control.nMagic] = nKeyK;
-	Note[466 + Control.nMagic] = nKeyL;
-	Note[478 + Control.nMagic] = nKeyA;
+	for (int i = 0; i <= 10; i++)
+	{
+		Note[440 + i + Control.nMagic] = nKeyA;
+	}
+
+
+	Note[461 + Control.nMagic] = nKeyJ;
+	Note[462 + Control.nMagic] = nKeyK;
+	Note[463 + Control.nMagic] = nKeyL;
+
+	Note[470 + Control.nMagic] = nKeyA;
+
+	//
+
+	Note[477 + Control.nMagic] = nKeyJ;
+	Note[480 + Control.nMagic] = nKeyK;
+	Note[483 + Control.nMagic] = nKeyL;
+
+	Note[491 + Control.nMagic] = nKeyA;
+	Note[496 + Control.nMagic] = nKeyDL; //원래 D였음, AD면좋을텐뎅
+
+
+	Note[501 + Control.nMagic] = nKeyJ;
+	Note[504 + Control.nMagic] = nKeyK;
+	Note[507 + Control.nMagic] = nKeyJ;
+	Note[510 + Control.nMagic] = nKeyK;
+
+	Note[514 + Control.nMagic] = nKeyA;
+	Note[517 + Control.nMagic] = nKeyD;
+
+
+	Note[523 + Control.nMagic] = nKeyJ;
+	Note[527 + Control.nMagic] = nKeyK;
+	Note[531 + Control.nMagic] = nKeyL;
+
+	Note[536 + Control.nMagic] = nKeyA;
+	Note[540 + Control.nMagic] = nKeyD;
+
+	Note[543 + Control.nMagic] = nKeyJ;
+	Note[545 + Control.nMagic] = nKeyK;
+	Note[547 + Control.nMagic] = nKeyL;
+	Note[549 + Control.nMagic] = nKeyJ;
+	Note[551 + Control.nMagic] = nKeyK;
+	Note[553 + Control.nMagic] = nKeyL;
+
+	Note[558 + Control.nMagic] = nKeyA;
+	Note[563 + Control.nMagic] = nKeyD;
+
+	//
+	Note[566 + Control.nMagic] = nKeyA;
+	Note[569 + Control.nMagic] = nKeyK;
+	Note[572 + Control.nMagic] = nKeyL;
+
+	Note[578 + Control.nMagic] = nKeyA;
+	//Note[582 + Control.nMagic] = nKeyD;
+
+	for (int i = 0; i <= 10; i += 4)
+	{
+		Note[586 + i + Control.nMagic] = nKeyJ;
+		Note[588 + i + Control.nMagic] = nKeyK;
+	}
+
+	Note[606 + Control.nMagic] = nKeyL;
+	Note[608 + Control.nMagic] = nKeyK;
+	Note[610 + Control.nMagic] = nKeyJ;
+	Note[612 + Control.nMagic] = nKeyD;
+	Note[614 + Control.nMagic] = nKeyS;
+	Note[616 + Control.nMagic] = nKeyA;
+
+	//Note[630 + Control.nMagic] = nKeyD;
+	Note[631 + Control.nMagic] = nKeyJ;
+	Note[632 + Control.nMagic] = nKeyK;
+
+	for (int i = 0; i<6; i++)
+	{
+		Note[633 + i + Control.nMagic] = nKeyL;
+	}
+	////////////
+
+	Note[645 + Control.nMagic] = nKeyJ;
+	Note[648 + Control.nMagic] = nKeyK;
+	Note[651 + Control.nMagic] = nKeyL;
+
+	Note[659 + Control.nMagic] = nKeyA;
+	Note[664 + Control.nMagic] = nKeyD;
+
+
+	Note[669 + Control.nMagic] = nKeyJ;
+	Note[672 + Control.nMagic] = nKeyK;
+	Note[675 + Control.nMagic] = nKeyJ;
+	Note[678 + Control.nMagic] = nKeyK;
+
+	Note[682 + Control.nMagic] = nKeyA;
+	Note[685 + Control.nMagic] = nKeyD;
+
+
+	Note[691 + Control.nMagic] = nKeyJ;
+	Note[695 + Control.nMagic] = nKeyK;
+	Note[699 + Control.nMagic] = nKeyL;
+
+	Note[704 + Control.nMagic] = nKeyA;
+	Note[708 + Control.nMagic] = nKeyD;
+
+	Note[711 + Control.nMagic] = nKeyJ;
+	Note[713 + Control.nMagic] = nKeyK;
+	Note[715 + Control.nMagic] = nKeyL;
+	Note[717 + Control.nMagic] = nKeyJ;
+	Note[719 + Control.nMagic] = nKeyK;
+	Note[721 + Control.nMagic] = nKeyL;
+
+	//
+	Note[726 + Control.nMagic] = nKeyJ;
+	Note[729 + Control.nMagic] = nKeyK;
+	Note[732 + Control.nMagic] = nKeyL;
+
+	Note[737 + Control.nMagic] = nKeyA;
+	Note[740 + Control.nMagic] = nKeyD;
+
+
+	Note[746 + Control.nMagic] = nKeyJ;
+	Note[749 + Control.nMagic] = nKeyK;
+	Note[752 + Control.nMagic] = nKeyJ;
+	Note[755 + Control.nMagic] = nKeyK;
+
+	Note[760 + Control.nMagic] = nKeyA;
+	Note[765 + Control.nMagic] = nKeyD;
+
 }
 
 // 키의 문자열 포인터를 반환해주는 함수
