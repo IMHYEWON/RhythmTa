@@ -90,7 +90,9 @@ void ScoreMap() {
 	ScreenPrint(44, 10, strScore);//Great,Perfect판별
 	ScreenPrint(44, 22, "Great : 300점");
 	ScreenPrint(44, 23, "Perfect : 500점");
-	//ScreenPrint(44, 25, "\'p\' to Pause");
+	SetColor(12);
+	ScreenPrint(44, 6, "Press \'p\' to Pause");
+	SetColor(15);
 	// 점수
 	char UserScore[20];//사용자 점수를 나타냄
 	sprintf(UserScore, "점수 : %d 점", nScore);
