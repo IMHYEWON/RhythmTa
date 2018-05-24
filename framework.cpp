@@ -130,7 +130,20 @@ void ReadyMap1() {
 	SetColor(15);
 }
 
+void ResultMap()
+{
+	
+	ScreenPrint(9, 7, "┌-------------------┐");
+	for (int i = 8; i < 15; i++) {
+		ScreenPrint(9, i, "│\t\t     │");
+	}
+	SetColor(9); ScreenPrint(15, 10, "GAME END !");SetColor(15);
+	char UserScore[20];//사용자 점수를 나타냄
+	sprintf(UserScore, "Score : %d 점", nScore);
+	ScreenPrint(14, 12, UserScore);
+	ScreenPrint(9, 15, "└-------------------┘");
 
+}
 
 // 노트에 해당하는 변수 선언
 string nKeyNone = "                                      ";
@@ -143,7 +156,7 @@ string nKeyA = "■■■";
 string nKeyAJ = "■■■              ■■■";
 string nKeySK = "      ■■■              ■■■";
 string nKeyDL = "            ■■■              ■■■";
-string nKeyALL = "■■■■■■■■■  ■■■■■■■■■";
+string nKeyALL = "■■■      ■■■  ■■■      ■■■";
 
 
 // 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
@@ -204,6 +217,8 @@ void Update() {
 		break;
 	case PAUSE:
 		break;
+	//case RESULT:
+	//	break;
 	}
 	//NoteCheck();
 }
@@ -239,8 +254,10 @@ void Render() {
 			}
 			ShowNote(n);
 		}
-
 		break;
+	//case RESULT:
+	//	
+	//	break;
 	}
 
 
@@ -273,6 +290,7 @@ int main(void) {
 					PauseTime += PauseEnd - PauseStart;
 					pChannel[0]->setPaused(false);
 				}
+		
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 			}
 			if (nKey == 'p') {
@@ -286,6 +304,7 @@ int main(void) {
 				if (Stage == PAUSE) continue;
 				CheckKey(nKey);
 			}
+			
 		}
 
 		Update();  // 데이터 갱신
