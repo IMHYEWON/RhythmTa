@@ -256,11 +256,14 @@ void Update() {
 	case RUNNING:
 		// 게임 시작 후 시간 측정변수
 		RunningTime = Curtime - Oldtime - PauseTime;
+		
 		break;
 	case PAUSE:
 		break;
 	//case RESULT:
-	//	break;
+		
+		
+		//break;
 	}
 	//NoteCheck();
 }
@@ -297,10 +300,18 @@ void Render(int nkey) {
 			}
 			ShowNote(n);
 		}
+		if (RunningTime > 52000)
+		{
+			Stage = RESULT;
+		}
 		break;
-	//case RESULT:
-	//	
-	//	break;
+	case RESULT:
+		if (RunningTime > 52000)
+		{
+			ResultMap();
+		}
+	
+	break;
 	}
 
 
