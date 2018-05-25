@@ -44,6 +44,9 @@ int n = 0;
 int nScore = 0;
 char strScore[20] = "  ";
 int nCombo = 0;
+
+string star = "";
+int star_x = 2;
 //
 clock_t RunningTime;
 clock_t PauseStart;
@@ -82,65 +85,43 @@ void Map(void) {
 	for (int i = 1; i < 29; i++) {
 		ScreenPrint(0, i, "□\t\t\t\t\t□");
 	}
+	ScreenPrint(star_x, 28, star.c_str());
 	ScreenPrint(0, 29, "□□□□□□□□□□□□□□□□□□□□□");
 	ScreenPrint(2, 26, "______________________________________");
-	//ScreenPrint(10,10,"☆☆☆☆☆☆☆☆☆☆☆☆☆");
 }
 
 void Hitmap(int nkey)
 {
 	if (nkey == 'a')
 	{
-		ScreenPrint(4, 28, "☆");
+		star = "☆";
+		star_x = 4;
 	}
 	else if (nkey == 's')
 	{
-		ScreenPrint(10, 28, "☆");
+		star = "☆";
+		star_x = 10;
 	}
 	else if (nkey == 'd')
 	{
-		ScreenPrint(16, 28, "☆");
+		star = "☆";
+		star_x = 16;
 	}
 	else if (nkey == 'j')
 	{
-		ScreenPrint(24, 28, "☆");
+		star = "☆";
+		star_x = 24;
 	}
 	else if (nkey == 'k')
 	{
-		ScreenPrint(30, 28, "☆");
+		star = "☆";
+		star_x = 30;
 	}
 	else if (nkey == 'l')
 	{
-		ScreenPrint(36, 28, "☆");
+		star = "☆";
+		star_x = 36;
 	}
-		
-	/*if (k == nKeyA)
-	{
-		ScreenPrint(10, 10, "☆");
-
-	}
-	else if (k == nKeyS)
-	{
-		ScreenPrint(5, 28, "☆");
-	}
-	else if (k == nKeyD)
-	{
-		ScreenPrint(8, 28, "☆");
-	}
-	else if (k == nKeyJ)
-	{
-		ScreenPrint(11, 28, "☆");
-	}
-	else if (k == nKeyK)
-	{
-		ScreenPrint(14, 28, "☆");
-	}
-	else if (k == nKeyL)
-	{
-		ScreenPrint(17, 28, "☆");
-	}*/
-	//ScreenPrint(10, 10, "☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆");
-	
 }
 
 
@@ -151,7 +132,14 @@ void ScoreMap() {
 	sprintf(nTime, "시간 : %d.%d초", RunningTime / 1000, RunningTime % 1000);
 	ScreenPrint(44, 2, nTime);
 	// 점수 목록
+	if (strcmp(strScore, "★Perfect★") == 0) {
+		SetColor(14);
+	}
+	else if (strcmp(strScore, "★Great★") == 0) {
+		SetColor(9);
+	}
 	ScreenPrint(44, 10, strScore);//Great,Perfect판별
+	SetColor(15);
 	ScreenPrint(44, 22, "Great : 300점");
 	ScreenPrint(44, 23, "Perfect : 500점");
 	SetColor(12);
