@@ -53,12 +53,9 @@ clock_t PauseStart;
 clock_t PauseEnd;
 clock_t PauseTime = 0;
 
- //노트에 해당하는 변수 선언
-
 
 
 // 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
-
 // 노트 판별 존
 typedef struct _NOTECOUNT {
 	int nXofA;   //(2,29)
@@ -204,6 +201,8 @@ void ResultMap()
 
 string Note[ALLNOTE];
 void KeyIndexInit();
+int isTwoKey(string note);
+
 void CheckKey(string inputKey);
 void NoteCheck(void);
 
@@ -315,6 +314,28 @@ void Render(int nkey) {
 void Release() {
 
 }
+string secondkbhit(int nKey, string inputKeyStr) {
+	int nKey2; // 두 번째로 입력된 키를 받기 위한 변수
+	for (int i = 0; i < 1000; i++) {
+		if (_kbhit()) {
+			nKey2 = _getch();
+			if (nKey2 == 'a' || nKey2 == 's' || nKey2 == 'd' || nKey2 == 'j' || nKey2 == 'k' || nKey2 == 'l') {
+				if (nKey == nKey2) { //이전 키가 길게 눌렸을 경우 인식하는 것을 방지
+					continue;
+				}
+				else if (nKey < nKey2) { //알파벳 순서가 빠른 것을 inputKeyStr에 먼저 배치
+					inputKeyStr += nKey2;
+				}
+				else {
+					inputKeyStr = nKey2;
+					inputKeyStr += nKey;
+				}
+				return inputKeyStr;
+			}
+		}
+	}
+	return "";
+}
 int main(void) {
 	int nKey = 0;
 	SoundSystem(); // FMOD 사용 준비
@@ -358,11 +379,13 @@ int main(void) {
 			}*/
 
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
-				if (Stage == PAUSE) continue;
+				if (Stage == PAUSE) { continue; }
 				
-				string inputKeyStr; // CheckKey의 인자로 줄 string 변수 선언 
-				inputKeyStr = nKey; // nKey를 string 변수에 대입				
-				
+				string inputKeyStr; // CheckKey()의 인자로 줄 string 변수 선언 
+				inputKeyStr = nKey; // nKey를 string 변수에 대입 
+				if (isTwoKey(Note[n]) || (n>0 && isTwoKey(Note[n - 1])) || isTwoKey(Note[n + 1])) { //현재 노트가 두 개라면
+					inputKeyStr=secondkbhit(nKey, inputKeyStr); // 첫 번째 키와 비교를 위한 int nKey와 string 반환을 위한 string inputKeyStr을 변수로 줌 
+				}
 				CheckKey(inputKeyStr);
 			}
 		}
@@ -592,8 +615,9 @@ void KeyIndexInit() {
 	KeyIndex[l].nKey = "                                ■■■";
 	KeyIndex[aj].inputKey = "aj";
 	KeyIndex[aj].nKey = "■■■              ■■■";
-	KeyIndex[sk].inputKey = "sk";
-	KeyIndex[sk].nKey = "      ■■■              ■■■";
+    KeyIndex[ks].inputKey = "ks";
+	KeyIndex[ks].nKey = "      ■■■              ■■■";
+
 	KeyIndex[dl].inputKey = "dl";
 	KeyIndex[dl].nKey = "            ■■■              ■■■";
 }
@@ -601,19 +625,33 @@ void KeyIndexInit() {
 // 키의 문자열을 반환해주는 함수
 string GetKeyType(string nKey) {
 	string inputKeyStr="";
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < NumOfKey; i++) {
 		if (nKey == KeyIndex[i].inputKey) {
 			inputKeyStr = KeyIndex[i].nKey;
+			break;
 		}
 	}
 	return inputKeyStr;
 }
 
+// 현재 노트가 두 개의 노트인지 확인해주는 함수
+int isTwoKey(string note) {
+	for (int i = 0; i < NumOfKey; i++) {
+		if (note == KeyIndex[i].nKey) { //note가 KeyIndex 구조체의 nKey string과 같다면
+			if (i >= aj) { //상수 aj보다 크다면 두 개의 노트를 가지고 있으므로 1 리턴
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+	}
+	return 0;
+}
+
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
-
 void CheckKey(string inputKey) {
-	
 	string inputKeyStr; // 입력한 키의 종류
 	inputKeyStr = GetKeyType(inputKey);
 	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
