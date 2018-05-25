@@ -265,6 +265,7 @@ int main(void) {
 	int nKey;
 	SoundSystem(); // FMOD 사용 준비
 	ScreenInit();
+	KeyIndexInit();
 	init(); // 초기화
 	Play(0);
 	while (1) {
@@ -294,7 +295,6 @@ int main(void) {
 				if (Stage == PAUSE) continue;
 				CheckKey(nKey);
 			}
-			
 		}
 
 		Update();  // 데이터 갱신
@@ -504,29 +504,53 @@ void NoteCheck(void) {
 
 }
 
+//키와 노트 string를 KeyNote구조체에 초기화 시켜주는 함수
+void KeyIndexInit() {
+	KeyIndex[0].inputKey = "none";
+	KeyIndex[0].nKey = "                                      ";
+	KeyIndex[1].inputKey = "a";
+	KeyIndex[1].nKey = "■■■";
+	KeyIndex[2].inputKey = "s";
+	KeyIndex[2].nKey = "      ■■■";
+	KeyIndex[3].inputKey = "d";
+	KeyIndex[3].nKey = "            ■■■";
+	KeyIndex[4].inputKey = "j";
+	KeyIndex[4].nKey = "                    ■■■";
+	KeyIndex[5].inputKey = "k";
+	KeyIndex[5].nKey = "                          ■■■";
+	KeyIndex[6].inputKey = "l";
+	KeyIndex[6].nKey = "                                ■■■";
+	KeyIndex[7].inputKey = "aj";
+	KeyIndex[7].nKey = "■■■              ■■■";
+	KeyIndex[8].inputKey = "sk";
+	KeyIndex[8].nKey = "      ■■■              ■■■";
+	KeyIndex[9].inputKey = "dl";
+	KeyIndex[9].nKey = "            ■■■              ■■■";
+}
+
 // 키의 문자열을 반환해주는 함수
 string GetKeyType(string nKey) {
-	string KeyType="";
+	string inputKeyStr="";
 	for (int i = 0; i < 10; i++) {
-		if (nKey == KeyIndex[i][0]) {
-			KeyType = KeyIndex[i][1];
+		if (nKey == KeyIndex[i].inputKey) {
+			inputKeyStr = KeyIndex[i].nKey;
 		}
 	}
-	return KeyType;
+	return inputKeyStr;
 }
 
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
 
-void CheckKey(int nKey) {
-	string KeyType; // 입력한 키의 종류
-	KeyType = GetKeyType(nKey);
-	if (Note[n] == KeyType) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+void CheckKey(string nKey) {
+	string inputKeyStr; // 입력한 키의 종류
+	inputKeyStr = GetKeyType(nKey);
+	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
 		sprintf(strScore, "%s", "★Perfect★");
 	}
-	else if ((n > 0 && (Note[n - 1] == KeyType)) || (Note[n + 1] == KeyType)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+	else if ((n > 0 && (Note[n - 1] == inputKeyStr)) || (Note[n + 1] == inputKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
 		sprintf(strScore, "%s", "★Great★");
