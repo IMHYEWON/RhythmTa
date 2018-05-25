@@ -147,18 +147,6 @@ void ResultMap()
 
 }
 
-// 노트에 해당하는 변수 선언
-string nKeyNone = "                                      ";
-string nKeyL = "                                ■■■";
-string nKeyK = "                          ■■■";
-string nKeyJ = "                    ■■■";
-string nKeyD = "            ■■■";
-string nKeyS = "      ■■■";
-string nKeyA = "■■■";
-string nKeyAJ = "■■■              ■■■";
-string nKeySK = "      ■■■              ■■■";
-string nKeyDL = "            ■■■              ■■■";
-string nKeyALL = "■■■      ■■■  ■■■      ■■■";
 
 
 // 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
@@ -513,9 +501,6 @@ void NoteCheck(void) {
 	{
 		Note[778 + i + Control.nMagic] = nKeySK;
 	}
-
-
-	Note[797 + Control.nMagic] = nKeyALL;
 
 }
 
