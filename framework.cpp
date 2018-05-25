@@ -203,6 +203,8 @@ void ResultMap()
 
 
 string Note[ALLNOTE];
+void KeyIndexInit();
+void CheckKey(string inputKey);
 void NoteCheck(void);
 
 
@@ -216,8 +218,7 @@ void ShowNote(int n) {
 
 
 
-// 입력 키 판별해주는 함수
-void CheckKey(int nKey);
+
 
 
 
@@ -318,6 +319,7 @@ int main(void) {
 	int nKey = 0;
 	SoundSystem(); // FMOD 사용 준비
 	ScreenInit();
+	KeyIndexInit();
 	init(); // stage를 ready 상태로 만들고 노트들 초기화
 	Play(0);
 	while (1) {
@@ -357,9 +359,12 @@ int main(void) {
 
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				if (Stage == PAUSE) continue;
-				CheckKey(nKey);
+				
+				string inputKeyStr; // CheckKey의 인자로 줄 string 변수 선언 
+				inputKeyStr = nKey; // nKey를 string 변수에 대입				
+				
+				CheckKey(inputKeyStr);
 			}
-			
 		}
 
 		Update();  // 데이터 갱신
@@ -568,49 +573,57 @@ void NoteCheck(void) {
 
 }
 
-// 키의 문자열 포인터를 반환해주는 함수
-string GetKeyType(int nKey) {
-	string KeyType;
-	switch (nKey) {
-	case 'a':
-		KeyType = nKeyA;
-		break;
-	case 's':
-		KeyType = nKeyS;
-		break;
-	case 'd':
-		KeyType = nKeyD;
-		break;
-	case 'j':
-		KeyType = nKeyJ;
-		break;
-	case 'k':
-		KeyType = nKeyK;
-		break;
-	case 'l':
-		KeyType = nKeyL;
-		break;
-	default:
-		KeyType = nKeyNone;
-		break;
+//키와 노트 string를 KeyNote구조체에 초기화 시켜주는 함수
+void KeyIndexInit() {
+	//index는 입력받은 키의 종류 (note.h에 상수로 선언)
+	KeyIndex[none].inputKey = "none";
+	KeyIndex[none].nKey = "                                      ";
+	KeyIndex[a].inputKey = "a";
+	KeyIndex[a].nKey = "■■■";
+	KeyIndex[s].inputKey = "s";
+	KeyIndex[s].nKey = "      ■■■";
+	KeyIndex[d].inputKey = "d";
+	KeyIndex[d].nKey = "            ■■■";
+	KeyIndex[j].inputKey = "j";
+	KeyIndex[j].nKey = "                    ■■■";
+	KeyIndex[k].inputKey = "k";
+	KeyIndex[k].nKey = "                          ■■■";
+	KeyIndex[l].inputKey = "l";
+	KeyIndex[l].nKey = "                                ■■■";
+	KeyIndex[aj].inputKey = "aj";
+	KeyIndex[aj].nKey = "■■■              ■■■";
+	KeyIndex[sk].inputKey = "sk";
+	KeyIndex[sk].nKey = "      ■■■              ■■■";
+	KeyIndex[dl].inputKey = "dl";
+	KeyIndex[dl].nKey = "            ■■■              ■■■";
+}
+
+// 키의 문자열을 반환해주는 함수
+string GetKeyType(string nKey) {
+	string inputKeyStr="";
+	for (int i = 0; i < 10; i++) {
+		if (nKey == KeyIndex[i].inputKey) {
+			inputKeyStr = KeyIndex[i].nKey;
+		}
 	}
-	return KeyType;
+	return inputKeyStr;
 }
 
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
 
-void CheckKey(int nKey) {
-	string KeyType; // 입력한 키의 종류
-	KeyType = GetKeyType(nKey);
-	if (Note[n] == KeyType) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+void CheckKey(string inputKey) {
+	
+	string inputKeyStr; // 입력한 키의 종류
+	inputKeyStr = GetKeyType(inputKey);
+	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
 		sprintf(strScore, "%s", "★Perfect★");
 		
 		
 	}
-	else if ((n > 0 && (Note[n - 1] == KeyType)) || (Note[n + 1] == KeyType)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+	else if ((n > 0 && (Note[n - 1] == inputKeyStr)) || (Note[n + 1] == inputKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
 		sprintf(strScore, "%s", "★Great★");
