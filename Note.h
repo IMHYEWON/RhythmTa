@@ -2,8 +2,15 @@
 #include<string>
 using namespace std;
 // 노트에 해당하는 변수 선언
-string KeyIndex[10][2] = {
-	{"none","                                      " },
+typedef struct KeyNote {
+	string inputKey;
+	string nKey;
+}KeyNote;
+
+KeyNote KeyIndex[10];
+KeyIndex[0].inputKey = "none";
+
+/*
 	{"a","■■■" },
 	{"s","      ■■■" },
 	{"d","            ■■■" },
@@ -13,7 +20,7 @@ string KeyIndex[10][2] = {
 	{"aj","■■■              ■■■" },
 	{"sk","      ■■■              ■■■" },
 	{"dl","            ■■■              ■■■" }
-};
+};*/
 string nKeyNone = "                                      ";
 string nKeyL = "                                ■■■";
 string nKeyK = "                          ■■■";

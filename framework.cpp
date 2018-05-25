@@ -504,31 +504,13 @@ void NoteCheck(void) {
 
 }
 
-// 키의 문자열 포인터를 반환해주는 함수
-string GetKeyType(int nKey) {
-	string KeyType;
-	switch (nKey) {
-	case 'a':
-		KeyType = nKeyA;
-		break;
-	case 's':
-		KeyType = nKeyS;
-		break;
-	case 'd':
-		KeyType = nKeyD;
-		break;
-	case 'j':
-		KeyType = nKeyJ;
-		break;
-	case 'k':
-		KeyType = nKeyK;
-		break;
-	case 'l':
-		KeyType = nKeyL;
-		break;
-	default:
-		KeyType = nKeyNone;
-		break;
+// 키의 문자열을 반환해주는 함수
+string GetKeyType(string nKey) {
+	string KeyType="";
+	for (int i = 0; i < 10; i++) {
+		if (nKey == KeyIndex[i][0]) {
+			KeyType = KeyIndex[i][1];
+		}
 	}
 	return KeyType;
 }
