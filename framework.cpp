@@ -50,6 +50,12 @@ clock_t PauseStart;
 clock_t PauseEnd;
 clock_t PauseTime = 0;
 
+ //노트에 해당하는 변수 선언
+
+
+
+// 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
+
 // 노트 판별 존
 typedef struct _NOTECOUNT {
 	int nXofA;   //(2,29)
@@ -63,7 +69,7 @@ NOTECOUNT Count;
 
 // 스테이지 구성
 typedef enum _STAGE {
-	READY, RUNNING,PAUSE, RESULT
+	READY, RUNNING,PAUSE, RESULT , SYNC
 }STAGE;
 STAGE Stage;
 
@@ -78,7 +84,65 @@ void Map(void) {
 	}
 	ScreenPrint(0, 29, "□□□□□□□□□□□□□□□□□□□□□");
 	ScreenPrint(2, 26, "______________________________________");
+	//ScreenPrint(10,10,"☆☆☆☆☆☆☆☆☆☆☆☆☆");
 }
+
+void Hitmap(int nkey)
+{
+	if (nkey == 'a')
+	{
+		ScreenPrint(4, 28, "☆");
+	}
+	else if (nkey == 's')
+	{
+		ScreenPrint(10, 28, "☆");
+	}
+	else if (nkey == 'd')
+	{
+		ScreenPrint(16, 28, "☆");
+	}
+	else if (nkey == 'j')
+	{
+		ScreenPrint(24, 28, "☆");
+	}
+	else if (nkey == 'k')
+	{
+		ScreenPrint(30, 28, "☆");
+	}
+	else if (nkey == 'l')
+	{
+		ScreenPrint(36, 28, "☆");
+	}
+		
+	/*if (k == nKeyA)
+	{
+		ScreenPrint(10, 10, "☆");
+
+	}
+	else if (k == nKeyS)
+	{
+		ScreenPrint(5, 28, "☆");
+	}
+	else if (k == nKeyD)
+	{
+		ScreenPrint(8, 28, "☆");
+	}
+	else if (k == nKeyJ)
+	{
+		ScreenPrint(11, 28, "☆");
+	}
+	else if (k == nKeyK)
+	{
+		ScreenPrint(14, 28, "☆");
+	}
+	else if (k == nKeyL)
+	{
+		ScreenPrint(17, 28, "☆");
+	}*/
+	//ScreenPrint(10, 10, "☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆");
+	
+}
+
 
 // 우측 점수 출력틀
 void ScoreMap() {
@@ -129,6 +193,7 @@ void ReadyMap() {
 void ReadyMap1() {
 	SetColor(10);
 	ScreenPrint(10, 15, "Press Enter to Start");
+	ScreenPrint(15, 20, "싱크 조정");
 	SetColor(15);
 }
 
@@ -149,7 +214,6 @@ void ResultMap()
 
 
 
-// 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
 string Note[ALLNOTE];
 void NoteCheck(void);
 
@@ -157,8 +221,8 @@ void NoteCheck(void);
 
 // 2차원 배열을 아래로 떨어지게끔 해주는 함수
 void ShowNote(int n) {
-	for (int i = 0; i < 28; i++) {
-		ScreenPrint(2, 28-i, Note[n+i]);
+	for (int i = 0; i < 27; i++) {
+		ScreenPrint(2, 27-i, Note[n+i]);
 	}
 }
 
@@ -176,9 +240,9 @@ void init() {
 	Control.nMagic = 1;
 	Stage = READY;
 	
-	for (int i = 0; i < ALLNOTE; i++) {
+	/*for (int i = 0; i < ALLNOTE; i++) {
 		Note[i] = " ";
-	}
+	}*/ // 노트 초기화 할 필요 있나? noteCheck 에서 노트들 모두 초기화해주기때문에
 	RunningTime = 0;
 	NoteCheck();
 	Count.nXofA = 2;   //(2,29)
@@ -196,7 +260,7 @@ void init() {
 clock_t Oldtime = 0;
 void Update() {
 	clock_t Curtime = clock();
-	//Control.nMagic = 1;
+	Control.nMagic = 1;
 	switch (Stage) {
 	case READY :
 		Oldtime = Curtime;
@@ -218,11 +282,12 @@ void Update() {
 
 
 clock_t Oldtime1 = 0;
-void Render() {
+void Render(int nkey) {
 	clock_t Curtime = clock(); // 지금까지 흐른 시간
 	ScreenClear();
 	//출력코드
 	Map();
+	Hitmap(nkey);
 	ScoreMap();
 	switch (Stage) {
 	case READY ://대기상태
@@ -262,10 +327,10 @@ void Release() {
 
 }
 int main(void) {
-	int nKey;
+	int nKey = 0;
 	SoundSystem(); // FMOD 사용 준비
 	ScreenInit();
-	init(); // 초기화
+	init(); // stage를 ready 상태로 만들고 노트들 초기화
 	Play(0);
 	while (1) {
 		if (_kbhit()) {
@@ -280,9 +345,11 @@ int main(void) {
 					PauseTime += PauseEnd - PauseStart;
 					pChannel[0]->setPaused(false);
 				}
-		
+
+				
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 			}
+			
 			if (nKey == 'p') {
 				if (Stage == RUNNING) {
 					PauseStart = clock();
@@ -290,6 +357,16 @@ int main(void) {
 					Stage = PAUSE;
 				}
 			}
+			/*if (nKey == 'c')
+			{
+				if (Stage == RUNNING)
+				{
+				}
+				else if (Stage == READY)
+				{
+				}
+			}*/
+
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				if (Stage == PAUSE) continue;
 				CheckKey(nKey);
@@ -298,7 +375,7 @@ int main(void) {
 		}
 
 		Update();  // 데이터 갱신
-		Render();  // 화면출력
+		Render(nKey);  // 화면출력
 
 		
 	}
@@ -543,11 +620,14 @@ void CheckKey(int nKey) {
 		nScore += 500;
 		nCombo++;
 		sprintf(strScore, "%s", "★Perfect★");
+		
+		
 	}
 	else if ((n > 0 && (Note[n - 1] == KeyType)) || (Note[n + 1] == KeyType)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
 		sprintf(strScore, "%s", "★Great★");
+		
 	}
 	else {
 		nCombo = 0;
