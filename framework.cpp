@@ -151,6 +151,8 @@ void ResultMap()
 
 // 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
 string Note[ALLNOTE];
+void KeyIndexInit();
+void CheckKey(string inputKey);
 void NoteCheck(void);
 
 
@@ -164,8 +166,7 @@ void ShowNote(int n) {
 
 
 
-// 입력 키 판별해주는 함수
-void CheckKey(int nKey);
+
 
 
 
@@ -293,7 +294,11 @@ int main(void) {
 			}
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				if (Stage == PAUSE) continue;
-				CheckKey(nKey);
+				
+				string inputKeyStr; // CheckKey의 인자로 줄 string 변수 선언 
+				inputKeyStr = nKey; // nKey를 string 변수에 대입				
+				
+				CheckKey(inputKeyStr);
 			}
 		}
 
@@ -506,26 +511,27 @@ void NoteCheck(void) {
 
 //키와 노트 string를 KeyNote구조체에 초기화 시켜주는 함수
 void KeyIndexInit() {
-	KeyIndex[0].inputKey = "none";
-	KeyIndex[0].nKey = "                                      ";
-	KeyIndex[1].inputKey = "a";
-	KeyIndex[1].nKey = "■■■";
-	KeyIndex[2].inputKey = "s";
-	KeyIndex[2].nKey = "      ■■■";
-	KeyIndex[3].inputKey = "d";
-	KeyIndex[3].nKey = "            ■■■";
-	KeyIndex[4].inputKey = "j";
-	KeyIndex[4].nKey = "                    ■■■";
-	KeyIndex[5].inputKey = "k";
-	KeyIndex[5].nKey = "                          ■■■";
-	KeyIndex[6].inputKey = "l";
-	KeyIndex[6].nKey = "                                ■■■";
-	KeyIndex[7].inputKey = "aj";
-	KeyIndex[7].nKey = "■■■              ■■■";
-	KeyIndex[8].inputKey = "sk";
-	KeyIndex[8].nKey = "      ■■■              ■■■";
-	KeyIndex[9].inputKey = "dl";
-	KeyIndex[9].nKey = "            ■■■              ■■■";
+	//index는 입력받은 키의 종류 (note.h에 상수로 선언)
+	KeyIndex[none].inputKey = "none";
+	KeyIndex[none].nKey = "                                      ";
+	KeyIndex[a].inputKey = "a";
+	KeyIndex[a].nKey = "■■■";
+	KeyIndex[s].inputKey = "s";
+	KeyIndex[s].nKey = "      ■■■";
+	KeyIndex[d].inputKey = "d";
+	KeyIndex[d].nKey = "            ■■■";
+	KeyIndex[j].inputKey = "j";
+	KeyIndex[j].nKey = "                    ■■■";
+	KeyIndex[k].inputKey = "k";
+	KeyIndex[k].nKey = "                          ■■■";
+	KeyIndex[l].inputKey = "l";
+	KeyIndex[l].nKey = "                                ■■■";
+	KeyIndex[aj].inputKey = "aj";
+	KeyIndex[aj].nKey = "■■■              ■■■";
+	KeyIndex[sk].inputKey = "sk";
+	KeyIndex[sk].nKey = "      ■■■              ■■■";
+	KeyIndex[dl].inputKey = "dl";
+	KeyIndex[dl].nKey = "            ■■■              ■■■";
 }
 
 // 키의 문자열을 반환해주는 함수
@@ -542,9 +548,10 @@ string GetKeyType(string nKey) {
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
 
-void CheckKey(string nKey) {
+void CheckKey(string inputKey) {
+	
 	string inputKeyStr; // 입력한 키의 종류
-	inputKeyStr = GetKeyType(nKey);
+	inputKeyStr = GetKeyType(inputKey);
 	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
