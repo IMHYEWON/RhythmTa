@@ -11,7 +11,7 @@ using namespace std;
 #define k 5
 #define l 6
 #define aj 7
-#define sk 8
+#define ks 8
 #define dl 9
 typedef struct KeyNote {
 	string inputKey;
