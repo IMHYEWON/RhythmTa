@@ -151,15 +151,15 @@ void ReadyMap1() {
 void ResultMap()
 {
 	
-	ScreenPrint(9, 7, "┌-------------------┐");
+	ScreenPrint(9, 7, "┌---------------------┐");
 	for (int i = 8; i < 15; i++) {
-		ScreenPrint(9, i, "│\t\t     │");
+		ScreenPrint(9, i, "│\t\t       │");
 	}
 	SetColor(9); ScreenPrint(15, 10, "GAME END !");SetColor(15);
 	char UserScore[20];//사용자 점수를 나타냄
 	sprintf(UserScore, "Score : %d 점", nScore);
 	ScreenPrint(14, 12, UserScore);
-	ScreenPrint(9, 15, "└-------------------┘");
+	ScreenPrint(9, 15, "└---------------------┘");
 
 }
 
