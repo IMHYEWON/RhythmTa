@@ -17,30 +17,16 @@ using namespace std;
 using namespace FMOD;
 
 #define ALLNOTE 1000
-//
+#define LEFT 75
+#define RIGHT 77
+#define UP 72
+#define DOWN 80
 
 System* pSystem;
 Sound* pSound[2];
 Channel* pChannel[1];
-
-void SoundSystem() {
-	System_Create(&pSystem);
-
-	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
-
-	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 배경음악
-	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 배경음악
-}
-
-void Play(int Sound_num) {
-
-	pSystem->playSound(FMOD_CHANNEL_FREE, pSound[Sound_num], 0, pChannel);
-
-}
-
-//
 int n = 0;
-
+int Syncnum = 1;
 int nScore = 0;
 char strScore[20] = "  ";
 int nCombo = 0;
@@ -49,12 +35,24 @@ clock_t RunningTime;
 clock_t PauseStart;
 clock_t PauseEnd;
 clock_t PauseTime = 0;
+clock_t SyncStart;
+clock_t SyncEnd;
+clock_t SyncTime = 0;
+string Sync1 = "화살표로 싱크를 조정하세요! : ";
+string Sync2 = "화살표로 싱크를 조정하세요! :";
+string Sync3 = "";
 
- //노트에 해당하는 변수 선언
+// 시간 컨트롤러
+typedef struct  CONTROL {
+	clock_t MovTime; // 싱크 맞추는 이동시간
+	clock_t OldTime; // 이전 이동시간
+	int nMagic; // 싱크 조율 변수
 
+}CONTROL;
+CONTROL Control;
+clock_t Oldtime = 0;
+clock_t Oldtime1 = 0;
 
-
-// 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
 
 // 노트 판별 존
 typedef struct _NOTECOUNT {
@@ -73,9 +71,128 @@ typedef enum _STAGE {
 }STAGE;
 STAGE Stage;
 
-
+string Note[ALLNOTE];
+void SoundSystem(void);
+void Play(int Sound_num);
+void Map(void);
+void Hitmap(int nKey);
+void ScoreMap(void);
+void ReadyMap(void);
+void ReadyMap1(void);
+void ResultMap(void);
+void SyncMap(void);
+void ShowNote(void);
+void init(void);
+void Update();
+void Render(int nKey);
+void Release();
+void NoteCheck();
+string GetKeyType(int nKey);
+void CheckKey(int nKey);
+void changeSync(int n);
 
 // 스테이지 기본 틀
+int main(void) {
+	int nKey = 0;
+	SoundSystem(); // FMOD 사용 준비
+	ScreenInit();
+	init(); // stage를 ready 상태로 만들고 노트들 초기화
+	Play(0);
+	while (1) {
+		
+		if (_kbhit()) {
+			nKey = _getch();
+			if (nKey == '\r') {
+				if (Stage == READY ) {
+					pChannel[0]->stop();
+					Play(1);
+				}
+				else if (Stage == PAUSE ) {
+					PauseEnd = clock();
+					PauseTime += PauseEnd - PauseStart;
+					pChannel[0]->setPaused(false);
+				}
+				else if (Stage == SYNC)
+				{
+					NoteCheck();
+					pChannel[0]->stop();
+					Play(1);
+					SyncEnd = clock();
+					SyncTime += SyncEnd - SyncStart;
+				}
+				
+				
+				
+				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
+			}
+			
+			if (nKey == 'p') {
+				if (Stage == RUNNING) {
+					PauseStart = clock();
+					pChannel[0]->setPaused(true);
+					Stage = PAUSE;
+				}
+			}
+			if (nKey == 'c') 
+			{
+				SyncStart = clock();
+				Stage = SYNC;
+				
+			}
+
+			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
+				if (Stage == PAUSE) continue;
+				CheckKey(nKey);
+			}
+			if (Stage == SYNC)
+			{
+				
+				 if (nKey == LEFT)// 싱크 줄이기
+				{
+					Sync2 = Sync1;
+					Syncnum--;
+					
+				}
+				else if (nKey == RIGHT) // 싱크 높이기
+				{
+					Sync2 = Sync1;
+					Syncnum++;
+				}
+				
+				Sync3 = to_string(Syncnum);
+				Sync2 += Sync3;
+				Control.nMagic = Syncnum;
+				
+				
+			}
+			
+		}
+
+		Update();  // 데이터 갱신
+		Render(nKey);  // 화면출력
+
+		
+	}
+	Release(); // 해제
+	ScreenRelease();
+	return 0;
+}
+
+void SoundSystem() {
+	System_Create(&pSystem);
+
+	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
+
+	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 배경음악
+	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 배경음악
+}
+
+void Play(int Sound_num) {
+
+	pSystem->playSound(FMOD_CHANNEL_FREE, pSound[Sound_num], 0, pChannel);
+
+}
+
 void Map(void) {
 	int nNum = 0;
 	ScreenPrint(0, 0, "□□□□□□□□□□□□□□□□□□□□□");
@@ -84,7 +201,6 @@ void Map(void) {
 	}
 	ScreenPrint(0, 29, "□□□□□□□□□□□□□□□□□□□□□");
 	ScreenPrint(2, 26, "______________________________________");
-	//ScreenPrint(10,10,"☆☆☆☆☆☆☆☆☆☆☆☆☆");
 }
 
 void Hitmap(int nkey)
@@ -113,34 +229,8 @@ void Hitmap(int nkey)
 	{
 		ScreenPrint(36, 28, "☆");
 	}
-		
-	/*if (k == nKeyA)
-	{
-		ScreenPrint(10, 10, "☆");
 
-	}
-	else if (k == nKeyS)
-	{
-		ScreenPrint(5, 28, "☆");
-	}
-	else if (k == nKeyD)
-	{
-		ScreenPrint(8, 28, "☆");
-	}
-	else if (k == nKeyJ)
-	{
-		ScreenPrint(11, 28, "☆");
-	}
-	else if (k == nKeyK)
-	{
-		ScreenPrint(14, 28, "☆");
-	}
-	else if (k == nKeyL)
-	{
-		ScreenPrint(17, 28, "☆");
-	}*/
-	//ScreenPrint(10, 10, "☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆");
-	
+
 }
 
 
@@ -170,17 +260,6 @@ void ScoreMap() {
 	ScreenPrint(44, 13, strCombo);
 }
 
-
-
-// 시간 컨트롤러
-typedef struct  CONTROL {
-	clock_t MovTime; // 싱크 맞추는 이동시간
-	clock_t OldTime; // 이전 이동시간
-	int nMagic; // 싱크 조율 변수
-
-}CONTROL;
-CONTROL Control;
-
 // 게임 실행 전 준비화면
 void ReadyMap() {
 	ScreenPrint(15, 10, "유령의 축제");
@@ -199,12 +278,12 @@ void ReadyMap1() {
 
 void ResultMap()
 {
-	
+
 	ScreenPrint(9, 7, "┌-------------------┐");
 	for (int i = 8; i < 15; i++) {
 		ScreenPrint(9, i, "│\t\t     │");
 	}
-	SetColor(9); ScreenPrint(15, 10, "GAME END !");SetColor(15);
+	SetColor(9); ScreenPrint(15, 10, "GAME END !"); SetColor(15);
 	char UserScore[20];//사용자 점수를 나타냄
 	sprintf(UserScore, "Score : %d 점", nScore);
 	ScreenPrint(14, 12, UserScore);
@@ -212,39 +291,29 @@ void ResultMap()
 
 }
 
-
-
-string Note[ALLNOTE];
-void NoteCheck(void);
-
-
+void SyncMap() // 싱크를 조절하는 맵 
+{
+	ScreenPrint(15, 15, Sync2);
+}
 
 // 2차원 배열을 아래로 떨어지게끔 해주는 함수
 void ShowNote(int n) {
 	for (int i = 0; i < 27; i++) {
-		ScreenPrint(2, 27-i, Note[n+i]);
+		ScreenPrint(2, 27 - i, Note[n + i]);
 	}
 }
 
-
-
-// 입력 키 판별해주는 함수
-void CheckKey(int nKey);
-
-
-
-
+//초기화
 void init() {
 	Control.MovTime = 52;
 	Control.OldTime = 0;
-	Control.nMagic = 1;
+	Control.nMagic = 30;
 	Stage = READY;
-	
+
 	/*for (int i = 0; i < ALLNOTE; i++) {
-		Note[i] = " ";
+	Note[i] = " ";
 	}*/ // 노트 초기화 할 필요 있나? noteCheck 에서 노트들 모두 초기화해주기때문에
 	RunningTime = 0;
-	NoteCheck();
 	Count.nXofA = 2;   //(2,29)
 	Count.nXofS = 8;
 	Count.nXofD = 14;
@@ -256,32 +325,25 @@ void init() {
 
 }
 
-
-clock_t Oldtime = 0;
 void Update() {
 	clock_t Curtime = clock();
-	Control.nMagic = 1;
+	//Control.nMagic = 1;
 	switch (Stage) {
-	case READY :
+	case READY:
 		Oldtime = Curtime;
 		break;
 	case RUNNING:
 		// 게임 시작 후 시간 측정변수
-		RunningTime = Curtime - Oldtime - PauseTime;
+		RunningTime = Curtime - Oldtime - PauseTime - SyncTime;
 		break;
 	case PAUSE:
 		break;
-	//case RESULT:
-	//	break;
+		//case RESULT:
+		//	break;
 	}
 	//NoteCheck();
 }
 
-
-
-
-
-clock_t Oldtime1 = 0;
 void Render(int nkey) {
 	clock_t Curtime = clock(); // 지금까지 흐른 시간
 	ScreenClear();
@@ -290,7 +352,7 @@ void Render(int nkey) {
 	Hitmap(nkey);
 	ScoreMap();
 	switch (Stage) {
-	case READY ://대기상태
+	case READY://대기상태
 		Oldtime1 = Curtime;
 		ReadyMap();
 		if (Curtime % 1000 > 500) {
@@ -299,10 +361,10 @@ void Render(int nkey) {
 		break;
 	case PAUSE:
 		return;
-	case RUNNING :
+	case RUNNING:
 		if (RunningTime > 3100) //3초 이후부터
 		{
-			if (Curtime - Control.OldTime > Control.MovTime) 
+			if (Curtime - Control.OldTime > Control.MovTime)
 			{
 				Control.OldTime = Curtime;
 				n++;//노트가 저장된 배열의 인덱스를 증가
@@ -310,13 +372,12 @@ void Render(int nkey) {
 			ShowNote(n);
 		}
 		break;
-	//case RESULT:
-	//	
-	//	break;
+		//case RESULT:
+		//	
+		//	break;
+	case SYNC:
+		SyncMap();
 	}
-
-
-
 
 
 
@@ -326,69 +387,16 @@ void Render(int nkey) {
 void Release() {
 
 }
-int main(void) {
-	int nKey = 0;
-	SoundSystem(); // FMOD 사용 준비
-	ScreenInit();
-	init(); // stage를 ready 상태로 만들고 노트들 초기화
-	Play(0);
-	while (1) {
-		if (_kbhit()) {
-			nKey = _getch();
-			if (nKey == '\r') {
-				if (Stage == READY) {
-					pChannel[0]->stop();
-					Play(1);
-				}
-				else if (Stage == PAUSE) {
-					PauseEnd = clock();
-					PauseTime += PauseEnd - PauseStart;
-					pChannel[0]->setPaused(false);
-				}
 
-				
-				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
-			}
-			
-			if (nKey == 'p') {
-				if (Stage == RUNNING) {
-					PauseStart = clock();
-					pChannel[0]->setPaused(true);
-					Stage = PAUSE;
-				}
-			}
-			/*if (nKey == 'c')
-			{
-				if (Stage == RUNNING)
-				{
-				}
-				else if (Stage == READY)
-				{
-				}
-			}*/
+void changeSYNC(int n)
+{
 
-			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
-				if (Stage == PAUSE) continue;
-				CheckKey(nKey);
-			}
-			
-		}
-
-		Update();  // 데이터 갱신
-		Render(nKey);  // 화면출력
-
-		
-	}
-	Release(); // 해제
-	ScreenRelease();
-	return 0;
 }
 
 
 
-
 // 악보
-void NoteCheck(void) {
+void NoteCheck() {
 	for (int i = 0; i < 30; i++) {
 		Note[i] = " ";
 	}
@@ -613,6 +621,7 @@ string GetKeyType(int nKey) {
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
 
+//입력 키 판별해주는 함수
 void CheckKey(int nKey) {
 	string KeyType; // 입력한 키의 종류
 	KeyType = GetKeyType(nKey);
