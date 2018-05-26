@@ -467,7 +467,7 @@ void NoteCheck(void) {
 
 	//연속구간
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 7; i+=2 )
 	{
 		Note[318 + i + Control.nMagic] = nKeyAJ;
 	}
@@ -490,7 +490,7 @@ void NoteCheck(void) {
 		Note[396 + i + Control.nMagic] = nKeyS;
 		Note[400 + i + Control.nMagic] = nKeyDL;
 	}
-	for (int i = 0; i <= 10; i++)
+	for (int i = 0; i <= 10; i+=2)
 	{
 		Note[436 + i + Control.nMagic] = nKeyA;
 	}
@@ -555,7 +555,7 @@ void NoteCheck(void) {
 	Note[627 + Control.nMagic] = nKeyJ;
 	Note[628 + Control.nMagic] = nKeyK;
 
-	for (int i = 0; i<6; i++)
+	for (int i = 0; i<=6; i+=2)
 	{
 		Note[629 + i + Control.nMagic] = nKeyL;
 	}
@@ -610,7 +610,7 @@ void NoteCheck(void) {
 		Note[762 + i + Control.nMagic] = nKeyK;
 	}
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 9; i+=2)
 	{
 		Note[777 + i + Control.nMagic] = nKeySK;
 	}
