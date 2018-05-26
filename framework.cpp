@@ -398,6 +398,10 @@ int main(void) {
 					Sync2 = Sync1;
 					Syncnum++;
 				}
+				else
+				{
+					continue;
+				}
 
 				Sync3 = to_string(Syncnum);
 				Sync2 += Sync3;
