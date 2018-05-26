@@ -32,7 +32,7 @@ void SoundSystem() {
 	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
 
 	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 오프닝음악
-	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 게임음악
+	pSystem->createSound("Festival_of_Ghost.wav", FMOD_DEFAULT, NULL, &pSound[1]); // 게임음악
 }
 
 void Play(int Sound_num) {
@@ -42,9 +42,9 @@ void Play(int Sound_num) {
 }
 
 //
-int n = 0;
+int n;
 
-int nScore = 0;
+int nScore;
 char strScore[20] = "  ";
 int nCombo = 0;
 int Syncnum = 1;
@@ -77,7 +77,7 @@ NOTECOUNT Count;
 
 // 스테이지 구성
 typedef enum _STAGE {
-	READY, RUNNING, PAUSE, RESULT, SYNC
+	READY, RUNNING, PAUSE, RESULT, SYNC, END
 }STAGE;
 STAGE Stage;
 
@@ -166,9 +166,11 @@ void ResultMap()
 	SetColor(9); ScreenPrint(15, 10, "GAME END !"); SetColor(15);
 	char UserScore[20];//사용자 점수를 나타냄
 	sprintf(UserScore, "Score : %d 점", nScore);
-	ScreenPrint(14, 12, UserScore);
+	ScreenPrint(13, 12, UserScore);
 	ScreenPrint(9, 15, "└---------------------┘");
-
+	SetColor(10);
+	ScreenPrint(10, 18, "Press Enter to Restart");
+	SetColor(15);
 }
 void SyncMap()
 {
@@ -199,14 +201,13 @@ void ShowNote(int n) {
 
 
 void init() {
+	n = 0; // Note[]에 사용하는 인덱스
+	nScore = 0; //
 	Control.MovTime = 52;
 	Control.OldTime = 0;
 	Control.nMagic = 1;
 	Stage = READY;
 
-	/*for (int i = 0; i < ALLNOTE; i++) {
-	Note[i] = " ";
-	}*/ // 노트 초기화 할 필요 있나? noteCheck 에서 노트들 모두 초기화해주기때문에
 	RunningTime = 0;
 	NoteCheck();
 	Count.nXofA = 2;   //(2,29)
@@ -215,16 +216,14 @@ void init() {
 	Count.nXofJ = 21;
 	Count.nXofK = 27;
 	Count.nXofL = 33;
-
-	//Stage = READY;
-
+	SyncTime = 0;
+	PauseTime = 0;
 }
 
 
 clock_t Oldtime = 0;
 void Update() {
 	clock_t Curtime = clock();
-	//Control.nMagic = 1;
 	switch (Stage) {
 	case READY:
 		Oldtime = Curtime;
@@ -236,12 +235,7 @@ void Update() {
 		break;
 	case PAUSE:
 		break;
-		//case RESULT:
-
-
-		//break;
 	}
-	//NoteCheck();
 }
 
 
@@ -286,11 +280,7 @@ void Render(int nkey) {
 		}
 		break;
 	case RESULT:
-		if (RunningTime > 52000)
-		{
-			ResultMap();
-		}
-
+		ResultMap();
 		break;
 	}
 
@@ -328,96 +318,101 @@ string secondkbhit(int nKey, string inputKeyStr) {
 	return "";
 }
 int main(void) {
-	int nKey = 0;
 	SoundSystem(); // FMOD 사용 준비
-	ScreenInit();
-	KeyIndexInit();
-	init(); // stage를 ready 상태로 만들고 노트들 초기화
-	Play(0); // pSound[0] (=opening.wav)를 실행
-	
-	while (1) {
-		if (_kbhit()) {
-			nKey = _getch();
-			if (nKey == '\r') {
-				if (Stage == READY) {
-					pChannel[0]->stop();
-					Play(1); // pSound[0] (=Festival_of_Ghost.wav)를 실행
+	while (Stage != END) {
+		int nKey = 0;
+		ScreenInit();
+		KeyIndexInit();
+		init(); // stage를 ready 상태로 만들고 노트들 초기화
+		Play(0); // pSound[0] (=opening.wav)를 실행
+
+		while (1) {
+			if (_kbhit()) {
+				nKey = _getch();
+				if (nKey == '\r') {
+					if (Stage == READY) {
+						pChannel[0]->stop();
+						Play(1); // pSound[0] (=Festival_of_Ghost.wav)를 실행
+					}
+					else if (Stage == PAUSE) {
+						PauseEnd = clock();
+						PauseTime += PauseEnd - PauseStart;
+						pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
+					}
+					else if (Stage == SYNC)
+					{
+						NoteCheck();
+						pChannel[0]->stop();
+						Play(1);
+						SyncEnd = clock();
+						SyncTime += SyncEnd - SyncStart;
+					}
+					else if (Stage == RESULT) {
+						break;
+					}
+
+					Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 				}
-				else if (Stage == PAUSE) {
-					PauseEnd = clock();
-					PauseTime += PauseEnd - PauseStart;
-					pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
+
+				if (nKey == 'p') {
+					if (Stage == RUNNING) {
+						PauseStart = clock();
+						pChannel[0]->setPaused(true); // 현재 pChannel[0]에 재생중인 노래를 일시 정지한다.
+						Stage = PAUSE;
+					}
 				}
-				else if (Stage == SYNC)
+				if (nKey == 'c')
 				{
-					NoteCheck();
-					pChannel[0]->stop();
-					Play(1);
-					SyncEnd = clock();
-					SyncTime += SyncEnd - SyncStart;
+					SyncStart = clock();
+					Stage = SYNC;
+					SyncMap();
 				}
 
-				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
-			}
+				if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
+					if (Stage == PAUSE) { continue; }
 
-			if (nKey == 'p') {
-				if (Stage == RUNNING) {
-					PauseStart = clock();
-					pChannel[0]->setPaused(true); // 현재 pChannel[0]에 재생중인 노래를 일시 정지한다.
-					Stage = PAUSE;
+					string inputKeyStr; // CheckKey()의 인자로 줄 string 변수 선언 
+					inputKeyStr = nKey; // nKey를 string 변수에 대입 
+					if (isTwoKey(Note[n]) || (n > 0 && isTwoKey(Note[n - 1])) || isTwoKey(Note[n + 1])) { //현재 노트가 두 개라면
+						inputKeyStr = secondkbhit(nKey, inputKeyStr); // 첫 번째 키와 비교를 위한 int nKey와 string 반환을 위한 string inputKeyStr을 변수로 줌 
+					}
+					CheckKey(inputKeyStr);
 				}
-			}
-			if (nKey == 'c')
-			{
-				SyncStart = clock();
-				Stage = SYNC;
-				SyncMap();
-			}
-
-			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
-				if (Stage == PAUSE) { continue; }
-
-				string inputKeyStr; // CheckKey()의 인자로 줄 string 변수 선언 
-				inputKeyStr = nKey; // nKey를 string 변수에 대입 
-				if (isTwoKey(Note[n]) || (n>0 && isTwoKey(Note[n - 1])) || isTwoKey(Note[n + 1])) { //현재 노트가 두 개라면
-					inputKeyStr = secondkbhit(nKey, inputKeyStr); // 첫 번째 키와 비교를 위한 int nKey와 string 반환을 위한 string inputKeyStr을 변수로 줌 
-				}
-				CheckKey(inputKeyStr);
-			}
-			if (Stage == SYNC)
-			{
-
-				if (nKey == LEFT)// 싱크 줄이기
+				if (Stage == SYNC)
 				{
-					Sync2 = Sync1;
-					Syncnum--;
+
+					if (nKey == LEFT)// 싱크 줄이기
+					{
+						Sync2 = Sync1;
+						Syncnum--;
+
+					}
+					else if (nKey == RIGHT) // 싱크 높이기
+					{
+						Sync2 = Sync1;
+						Syncnum++;
+					}
+					else
+					{
+						continue;
+					}
+
+					Sync3 = to_string(Syncnum);
+					Sync2 += Sync3;
+					Control.nMagic = Syncnum;
+
 
 				}
-				else if (nKey == RIGHT) // 싱크 높이기
-				{
-					Sync2 = Sync1;
-					Syncnum++;
-				}
-				else
-				{
-					continue;
-				}
-
-				Sync3 = to_string(Syncnum);
-				Sync2 += Sync3;
-				Control.nMagic = Syncnum;
-
-
 			}
+
+			Update();  // 데이터 갱신
+			Render(nKey);  // 화면출력
+
+
 		}
-
-		Update();  // 데이터 갱신
-		Render(nKey);  // 화면출력
-
-
+		Release(); // 해제
+		ScreenRelease();
 	}
-	Release(); // 해제
-	ScreenRelease();
 	return 0;
 }
 
