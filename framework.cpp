@@ -15,12 +15,11 @@
 
 using namespace std;
 using namespace FMOD;
-
-#define ALLNOTE 1000
 #define LEFT 75
 #define RIGHT 77
 #define UP 72
 #define DOWN 80
+#define ALLNOTE 1300
 //
 
 System* pSystem;
@@ -48,10 +47,9 @@ int n = 0;
 int nScore = 0;
 char strScore[20] = "  ";
 int nCombo = 0;
-
+int Syncnum = 1;
 string star = "";
 int star_x = 2;
-int Syncnum = 1;
 //
 clock_t RunningTime;
 clock_t PauseStart;
@@ -63,6 +61,7 @@ clock_t SyncTime = 0;
 string Sync1 = "화살표로 싱크를 조정하세요! : ";
 string Sync2 = "화살표로 싱크를 조정하세요! :";
 string Sync3 = "";
+
 
 // 19개 / 3 / 3 / 3 / 1 / 3 / 3 / 3
 // 노트 판별 존
@@ -160,22 +159,23 @@ void ReadyMap1() {
 void ResultMap()
 {
 
-	ScreenPrint(9, 7, "┌-------------------┐");
+	ScreenPrint(9, 7, "┌---------------------┐");
 	for (int i = 8; i < 15; i++) {
-		ScreenPrint(9, i, "│\t\t     │");
+		ScreenPrint(9, i, "│\t\t       │");
 	}
 	SetColor(9); ScreenPrint(15, 10, "GAME END !"); SetColor(15);
 	char UserScore[20];//사용자 점수를 나타냄
 	sprintf(UserScore, "Score : %d 점", nScore);
 	ScreenPrint(14, 12, UserScore);
-	ScreenPrint(9, 15, "└-------------------┘");
+	ScreenPrint(9, 15, "└---------------------┘");
 
 }
-
 void SyncMap()
 {
 	ScreenPrint(15, 15, Sync2);
 }
+
+
 
 string Note[ALLNOTE];
 void KeyIndexInit();
@@ -208,7 +208,7 @@ void init() {
 	Note[i] = " ";
 	}*/ // 노트 초기화 할 필요 있나? noteCheck 에서 노트들 모두 초기화해주기때문에
 	RunningTime = 0;
-	//NoteCheck();
+	NoteCheck();
 	Count.nXofA = 2;   //(2,29)
 	Count.nXofS = 8;
 	Count.nXofD = 14;
@@ -231,7 +231,7 @@ void Update() {
 		break;
 	case RUNNING:
 		// 게임 시작 후 시간 측정변수
-		RunningTime = Curtime - Oldtime - PauseTime - SyncTime;
+		RunningTime = Curtime - Oldtime - PauseTime - SyncTime ;
 
 		break;
 	case PAUSE:
@@ -253,10 +253,13 @@ void Render(int nkey) {
 	clock_t Curtime = clock(); // 지금까지 흐른 시간
 	ScreenClear();
 	//출력코드
+	
 	Map();
-	if (Stage == SYNC)
-		SyncMap();
 	ScoreMap();
+	if (Stage == SYNC)
+	{
+		SyncMap();
+	}
 	switch (Stage) {
 	case READY://대기상태
 		Oldtime1 = Curtime;
@@ -331,6 +334,7 @@ int main(void) {
 	KeyIndexInit();
 	init(); // stage를 ready 상태로 만들고 노트들 초기화
 	Play(0); // pSound[0] (=opening.wav)를 실행
+	
 	while (1) {
 		if (_kbhit()) {
 			nKey = _getch();
@@ -344,14 +348,13 @@ int main(void) {
 					PauseTime += PauseEnd - PauseStart;
 					pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
 				}
-				else if (Stage == SYNC) // 싱크 화면에서 노래를 시작 할 때
+				else if (Stage == SYNC)
 				{
 					NoteCheck();
 					pChannel[0]->stop();
 					Play(1);
 					SyncEnd = clock();
 					SyncTime += SyncEnd - SyncStart;
-
 				}
 
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
@@ -366,26 +369,24 @@ int main(void) {
 			}
 			if (nKey == 'c')
 			{
-
 				SyncStart = clock();
 				Stage = SYNC;
-				
+				SyncMap();
 			}
 
-			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l')
-			{
+			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				if (Stage == PAUSE) { continue; }
-			
+
 				string inputKeyStr; // CheckKey()의 인자로 줄 string 변수 선언 
 				inputKeyStr = nKey; // nKey를 string 변수에 대입 
 				if (isTwoKey(Note[n]) || (n>0 && isTwoKey(Note[n - 1])) || isTwoKey(Note[n + 1])) { //현재 노트가 두 개라면
 					inputKeyStr = secondkbhit(nKey, inputKeyStr); // 첫 번째 키와 비교를 위한 int nKey와 string 반환을 위한 string inputKeyStr을 변수로 줌 
 				}
-
 				CheckKey(inputKeyStr);
 			}
 			if (Stage == SYNC)
 			{
+
 				if (nKey == LEFT)// 싱크 줄이기
 				{
 					Sync2 = Sync1;
@@ -402,8 +403,8 @@ int main(void) {
 				Sync2 += Sync3;
 				Control.nMagic = Syncnum;
 
-			}
 
+			}
 		}
 
 		Update();  // 데이터 갱신
@@ -421,7 +422,7 @@ int main(void) {
 
 // 악보
 void NoteCheck(void) {
-	for (int i = 0; i < 30; i++) {
+	for (int i = 0; i < ALLNOTE; i++) {
 		Note[i] = " ";
 	}
 
