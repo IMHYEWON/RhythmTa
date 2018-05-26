@@ -28,8 +28,8 @@ void SoundSystem() {
 
 	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
 
-	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 배경음악
-	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 배경음악
+	pSystem->createSound("opening.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[0]); // 오프닝음악
+	pSystem->createSound("Festival_of_Ghost.wav", FMOD_LOOP_NORMAL | FMOD_HARDWARE, NULL, &pSound[1]); // 게임음악
 }
 
 void Play(int Sound_num) {
@@ -85,40 +85,6 @@ void Map(void) {
 	ScreenPrint(star_x, 28, star.c_str());
 	ScreenPrint(0, 29, "□□□□□□□□□□□□□□□□□□□□□");
 	ScreenPrint(2, 26, "______________________________________");
-}
-
-void Hitmap(int nkey)
-{
-	if (nkey == 'a')
-	{
-		star = "☆";
-		star_x = 4;
-	}
-	else if (nkey == 's')
-	{
-		star = "☆";
-		star_x = 10;
-	}
-	else if (nkey == 'd')
-	{
-		star = "☆";
-		star_x = 16;
-	}
-	else if (nkey == 'j')
-	{
-		star = "☆";
-		star_x = 24;
-	}
-	else if (nkey == 'k')
-	{
-		star = "☆";
-		star_x = 30;
-	}
-	else if (nkey == 'l')
-	{
-		star = "☆";
-		star_x = 36;
-	}
 }
 
 
@@ -211,15 +177,13 @@ void NoteCheck(void);
 // 2차원 배열을 아래로 떨어지게끔 해주는 함수
 void ShowNote(int n) {
 	for (int i = 0; i < 27; i++) {
-		ScreenPrint(2, 27-i, Note[n+i]);
+		if (28 - i >= 27) { // 히트 라인 밑으로 내려간 블록 전부다 노란색으로 변경.
+			SetColor(14);
+		}
+		else SetColor(15);
+		ScreenPrint(2, 28-i, Note[n+i]);
 	}
 }
-
-
-
-
-
-
 
 
 void init() {
@@ -248,7 +212,7 @@ void init() {
 clock_t Oldtime = 0;
 void Update() {
 	clock_t Curtime = clock();
-	Control.nMagic = 1;
+	//Control.nMagic = 1;
 	switch (Stage) {
 	case READY :
 		Oldtime = Curtime;
@@ -278,7 +242,6 @@ void Render(int nkey) {
 	ScreenClear();
 	//출력코드
 	Map();
-	Hitmap(nkey);
 	ScoreMap();
 	switch (Stage) {
 	case READY ://대기상태
@@ -353,21 +316,20 @@ int main(void) {
 	ScreenInit();
 	KeyIndexInit();
 	init(); // stage를 ready 상태로 만들고 노트들 초기화
-	Play(0);
+	Play(0); // pSound[0] (=opening.wav)를 실행
 	while (1) {
 		if (_kbhit()) {
 			nKey = _getch();
 			if (nKey == '\r') {
 				if (Stage == READY) {
 					pChannel[0]->stop();
-					Play(1);
+					Play(1); // pSound[0] (=Festival_of_Ghost.wav)를 실행
 				}
 				else if (Stage == PAUSE) {
 					PauseEnd = clock();
 					PauseTime += PauseEnd - PauseStart;
-					pChannel[0]->setPaused(false);
+					pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
 				}
-
 				
 				Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 			}
@@ -375,19 +337,10 @@ int main(void) {
 			if (nKey == 'p') {
 				if (Stage == RUNNING) {
 					PauseStart = clock();
-					pChannel[0]->setPaused(true);
+					pChannel[0]->setPaused(true); // 현재 pChannel[0]에 재생중인 노래를 일시 정지한다.
 					Stage = PAUSE;
 				}
 			}
-			/*if (nKey == 'c')
-			{
-				if (Stage == RUNNING)
-				{
-				}
-				else if (Stage == READY)
-				{
-				}
-			}*/
 
 			if (nKey == 'a' || nKey == 's' || nKey == 'd' || nKey == 'j' || nKey == 'k' || nKey == 'l') {
 				if (Stage == PAUSE) { continue; }
@@ -660,6 +613,14 @@ int isTwoKey(string note) {
 	return 0;
 }
 
+string HitNote(string inputKey) {
+	for (int i = 0; i < inputKey.length(); i++) {
+		if (inputKey[i] != ' ') {
+			inputKey[i] = 'oo';
+		}
+	}
+	return inputKey;
+}
 // 충돌처리
 // main에서 해당 키 입력시 호출되는 함수
 void CheckKey(string inputKey) {
@@ -668,6 +629,7 @@ void CheckKey(string inputKey) {
 	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
+		Note[n] = HitNote(inputKeyStr);
 		sprintf(strScore, "%s", "★Perfect★");
 		
 		
@@ -675,6 +637,8 @@ void CheckKey(string inputKey) {
 	else if ((n > 0 && (Note[n - 1] == inputKeyStr)) || (Note[n + 1] == inputKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
+		Note[n + 1] = HitNote(inputKeyStr);
+		Note[n - 1] = HitNote(inputKeyStr);
 		sprintf(strScore, "%s", "★Great★");
 		
 	}
