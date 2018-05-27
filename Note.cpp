@@ -127,6 +127,7 @@ void SyncMap()
 void init() {
 	curNoteIndex = 0; 
 	nScore = 0; //
+	nCombo = 0;
 	Control.MovTime = 52;
 	Control.OldTime = 0;
 	Control.nMagic = 1;
