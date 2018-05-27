@@ -421,6 +421,7 @@ void init() {
 	SyncTime = 0;
 	PauseTime = 0;
 }
+
 //키와 노트 string를 KeyNote구조체에 초기화 시켜주는 함수
 void KeyIndexInit() {
 	//index는 입력받은 키의 종류 (note.h에 상수로 선언)
