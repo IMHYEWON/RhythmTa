@@ -325,7 +325,6 @@ void Map(void) {
 	for (int i = 1; i < 29; i++) {
 		ScreenPrint(0, i, "¡à\t\t\t\t\t¡à");
 	}
-	ScreenPrint(star_x, 28, star.c_str());
 	ScreenPrint(0, 29, "¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à¡à");
 	ScreenPrint(2, 26, "______________________________________");
 }

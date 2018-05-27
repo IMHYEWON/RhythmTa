@@ -7,6 +7,7 @@
 using namespace std;
 using namespace FMOD;
 
+//**********************************************상수 선언**********************************************
 // 키의 종류 개수
 #define NumOfKey 10
 //노트 개수
@@ -28,31 +29,19 @@ using namespace FMOD;
 #define UP 72
 #define DOWN 80
 
-// 노트 종류를 string으로 선언
-string nKeyNone = "                                      ";
-string nKeyL = "                                ■■■";
-string nKeyK = "                          ■■■";
-string nKeyJ = "                    ■■■";
-string nKeyD = "            ■■■";
-string nKeyS = "      ■■■";
-string nKeyA = "■■■";
-string nKeyAJ = "■■■              ■■■";
-string nKeySK = "      ■■■              ■■■";
-string nKeyDL = "            ■■■              ■■■";
-
-// 입력 키(inputKey)와 노트 종류(nKey)를 구조체로 선언
+//*********************************************구조체&구조체 변수 선언**********************************************
+// 입력 키(inputKey), 노트 종류(nKey) 구조체 선언
 typedef struct KeyNote {
 	string inputKey;
 	string nKey;
 }KEYNOTE;
-//입력 키&노트 종류 개수만큼 구조체 배열 선언
-KEYNOTE KeyIndex[NumOfKey]; 
+KEYNOTE KeyIndex[NumOfKey]; //입력 키&노트 종류 개수만큼 구조체 배열 선언
 
 // 스테이지 구성
 typedef enum _STAGE {
 	READY, RUNNING, PAUSE, RESULT, SYNC, END
 }STAGE;
-STAGE Stage;
+STAGE Stage; 
 
 // 시간 컨트롤러
 typedef struct  CONTROL {
@@ -62,20 +51,7 @@ typedef struct  CONTROL {
 }CONTROL;
 CONTROL Control;
 
-//전역 변수
-int curNoteIndex;
-int nScore; //
-char strScore[20] = "  ";
-int nCombo = 0;
-int Syncnum = 1;
-string star = "";
-int star_x = 2;
-string Note[ALLNOTE];
-string Sync1 = "Press ← → to tune the Sync! : ";
-string Sync2 = "Press ← → to tune the Sync! : ";
-string Sync3 = "";
-
-
+//*********************************************전역 변수 선언**********************************************
 // 사운드 변수
 System* pSystem;
 Sound* pSound[2];
@@ -92,6 +68,38 @@ clock_t SyncTime = 0;
 clock_t Oldtime1 = 0;
 clock_t Oldtime = 0;
 
+// 노트 종류를 string으로 선언
+string nKeyNone = "                                      ";
+string nKeyL = "                                ■■■";
+string nKeyK = "                          ■■■";
+string nKeyJ = "                    ■■■";
+string nKeyD = "            ■■■";
+string nKeyS = "      ■■■";
+string nKeyA = "■■■";
+string nKeyAJ = "■■■              ■■■";
+string nKeySK = "      ■■■              ■■■";
+string nKeyDL = "            ■■■              ■■■";
+
+// 노트 배열
+string Note[ALLNOTE];
+
+// 현재 perfect 구간의 Note 배열 인덱스 변수
+int curNoteIndex;
+
+// 점수 변수
+int nScore; //
+char strScore[20] = "  ";
+
+// 콤보 변수
+int nCombo = 0;
+
+// 싱크 변수
+int Syncnum = 1;
+string Sync1 = "Press ← → to tune the Sync! : ";
+string Sync2 = "Press ← → to tune the Sync! : ";
+string Sync3 = "";
+
+//*********************************************함수 선언**********************************************
 //키
 int isTwoKey(string note);
 void CheckKey(string inputKey);
@@ -100,7 +108,7 @@ string GetKeyType(string nKey);
 
 //노트
 void NoteCheck(void);
-void ShowNote(int n);
+void ShowNote();
 string HitNote(string inputKey);
 
 //사운드
@@ -119,7 +127,7 @@ void SyncMap();
 void init();
 void KeyIndexInit();
 
-//기능
+//기본 기능
 void Update();
 void Render(int nKey);
 void Release();
