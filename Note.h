@@ -91,6 +91,11 @@ int curNoteIndex;
 int nScore; //
 char strScore[20] = "  ";
 
+// ·©Å· º¯¼ö
+int bestScore = 0;
+string BestScore;
+string UserScore;
+
 // ÄÞº¸ º¯¼ö
 int nCombo = 0;
 

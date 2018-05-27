@@ -94,19 +94,23 @@ void ReadyMap1() {
 // 결과화면 출력
 void ResultMap()
 {
-
-	ScreenPrint(9, 7, "┌---------------------┐");
-	for (int i = 8; i < 15; i++) {
-		ScreenPrint(9, i, "│\t\t       │");
-	}
 	SetColor(9); ScreenPrint(15, 10, "GAME END !"); SetColor(15);
-	char UserScore[20];//사용자 점수를 나타냄
-	sprintf(UserScore, "Score : %d 점", nScore);
-	ScreenPrint(13, 12, UserScore);
-	ScreenPrint(9, 15, "└---------------------┘");
+	UserScore = "[User] "; // 사용자 점수를 나타냄
+
+	UserScore += to_string(nScore);
+
+	if (nScore >= bestScore) {
+		BestScore = "[Best] ";
+		bestScore = nScore;
+		BestScore += to_string(bestScore);
+	}
+
+	SetColor(14);
+	ScreenPrint(13, 12, BestScore);
+	SetColor(15);
+	ScreenPrint(13, 14, UserScore);
 	SetColor(10);
 	ScreenPrint(10, 18, "Press Enter to Restart");
-	SetColor(14);
 	ScreenPrint(13, 20, "Press q to Exit");
 	SetColor(15);
 }
