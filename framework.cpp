@@ -35,7 +35,7 @@ int main(void) {
 			if (_kbhit()) {
 				inputKey = _getch();
 
-				if (inputKey == '\r') { // 엔터 키를 입력하는 경우
+				if (inputKey == ENTER) { // 엔터 키를 입력하는 경우
 					if (Stage == READY) {
 						pChannel[0]->stop();
 						Play(1); // pSound[0] (=Festival_of_Ghost.wav)를 실행
@@ -46,7 +46,7 @@ int main(void) {
 						pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
 					}
 					else if (Stage == SYNC){ // 스테이지가 Sync 상태일 때 엔터를 누를 경우
-						NoteCheck();
+						NoteInit();
 						pChannel[0]->stop();
 						Play(1);
 						SyncEnd = clock();
@@ -78,7 +78,7 @@ int main(void) {
 					}
 
 					string inputKeyStr; // CheckKey()의 인자로 줄 변수, inputKey를 string으로 변환할 변수 선언 
-					inputKeyStr = inputKey; // inputKey를 string 변수로 변환
+					inputKeyStr = inputKey; // int inputKey를 string 변수로 변환
 					if (isTwoKey(Note[curNoteIndex]) || (curNoteIndex > 0 && isTwoKey(Note[curNoteIndex - 1])) || isTwoKey(Note[curNoteIndex + 1])) { // hit 구간 노트가 두 개라면
 						inputKeyStr = secondkbhit(inputKey, inputKeyStr); // inputKey와 비교를 위해 'inputKey'와 string 반환을 위한 'inputKeyStr'을 인자로 줌 
 					}
@@ -93,26 +93,10 @@ int main(void) {
 				}
 
 				if (Stage == SYNC) {
-					if (inputKey == LEFT) { // 싱크 줄이기
-						if (Syncnum <= -30) {
-							Syncnum = Syncnum;
-						}
-						else {
-							Syncnum--;
-						}
-					}
-					else if (inputKey == RIGHT) { // 싱크 높이기
-						if (Syncnum >= 30) {
-							Syncnum = Syncnum;
-						}
-						else {
-							Syncnum++;
-						}
-					}
-					else { // 다른 키 입력 못받게함
+					if (inputKey != LEFT && inputKey != RIGHT) {
 						continue;
 					}
-					Control.nMagic = Syncnum;
+					ControlSync(inputKey);
 				}
 			}
 

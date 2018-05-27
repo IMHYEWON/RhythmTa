@@ -28,6 +28,7 @@ using namespace FMOD;
 #define RIGHT 77
 #define UP 72
 #define DOWN 80
+#define ENTER '\r'
 
 //*********************************************구조체&구조체 변수 선언**********************************************
 // 입력 키(inputKey), 노트 종류(nKey) 구조체 선언
@@ -97,17 +98,6 @@ int nCombo = 0;
 int Syncnum = 1;
 
 //*********************************************함수 선언**********************************************
-//키
-int isTwoKey(string note);
-void CheckKey(string inputKey);
-string secondkbhit(int nKey, string inputKeyStr);
-string GetKeyType(string nKey);
-
-//노트
-void NoteCheck(void);
-void ShowNote();
-string HitNote(string inputKey);
-
 //사운드
 void SoundSystem();
 void Play(int Sound_num);
@@ -122,9 +112,23 @@ void SyncMap();
 
 //초기화
 void init();
+void NoteInit();
 void KeyIndexInit();
 
 //기본 기능
 void Update();
 void Render(int nKey);
 void Release();
+
+// 키
+int isTwoKey(string nKeyStr);
+void CheckKey(string inputKeyStr);
+string secondkbhit(int nKey, string inputKeyStr);
+string GetKeyType(string inputKeyStr);
+
+// 노트
+void ShowNote();
+string HitNote(string inputKey);
+
+// 싱크
+void ControlSync(int inputKey);
