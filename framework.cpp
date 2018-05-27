@@ -74,7 +74,7 @@ int main(void) {
 
 					string inputKeyStr; // CheckKey()의 인자로 줄 string 변수 선언 
 					inputKeyStr = nKey; // nKey를 string 변수에 대입 
-					if (isTwoKey(Note[n]) || (n > 0 && isTwoKey(Note[n - 1])) || isTwoKey(Note[n + 1])) { //현재 노트가 두 개라면
+					if (isTwoKey(Note[curNoteIndex]) || (curNoteIndex > 0 && isTwoKey(Note[curNoteIndex - 1])) || isTwoKey(Note[curNoteIndex + 1])) { //현재 노트가 두 개라면
 						inputKeyStr = secondkbhit(nKey, inputKeyStr); // 첫 번째 키와 비교를 위한 int nKey와 string 반환을 위한 string inputKeyStr을 변수로 줌 
 					}
 					CheckKey(inputKeyStr);

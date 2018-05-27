@@ -48,29 +48,6 @@ typedef struct KeyNote {
 //입력 키&노트 종류 개수만큼 구조체 배열 선언
 KEYNOTE KeyIndex[NumOfKey]; 
 
-typedef struct _NOTECOUNT {
-	int nXofA;   //(2,29)
-	int nXofS;
-	int nXofD;
-	int nXofJ;
-	int nXofK;
-	int nXofL;
-}NOTECOUNT;
-NOTECOUNT Count;
-
-//전역 변수
-int n; //Note 배열 인덱스
-int nScore; //
-char strScore[20] = "  ";
-int nCombo = 0;
-int Syncnum = 1;
-string star = "";
-int star_x = 2;
-string Note[ALLNOTE];
-string Sync1 = "Press ← → to tune the Sync! : ";
-string Sync2 = "Press ← → to tune the Sync! : ";
-string Sync3 = "";
-
 // 스테이지 구성
 typedef enum _STAGE {
 	READY, RUNNING, PAUSE, RESULT, SYNC, END
@@ -84,6 +61,20 @@ typedef struct  CONTROL {
 	int nMagic; // 싱크 조율 변수
 }CONTROL;
 CONTROL Control;
+
+//전역 변수
+int curNoteIndex;
+int nScore; //
+char strScore[20] = "  ";
+int nCombo = 0;
+int Syncnum = 1;
+string star = "";
+int star_x = 2;
+string Note[ALLNOTE];
+string Sync1 = "Press ← → to tune the Sync! : ";
+string Sync2 = "Press ← → to tune the Sync! : ";
+string Sync3 = "";
+
 
 // 사운드 변수
 System* pSystem;

@@ -274,17 +274,17 @@ string HitNote(string inputKey) {
 void CheckKey(string inputKey) {
 	string inputKeyStr; // 입력한 키의 종류
 	inputKeyStr = GetKeyType(inputKey);
-	if (Note[n] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+	if (Note[curNoteIndex] == inputKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
-		Note[n] = HitNote(inputKeyStr);
+		Note[curNoteIndex] = HitNote(inputKeyStr);
 		sprintf(strScore, "%s", "★Perfect★");
 	}
-	else if ((n > 0 && (Note[n - 1] == inputKeyStr)) || (Note[n + 1] == inputKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
+	else if ((curNoteIndex > 0 && (Note[curNoteIndex - 1] == inputKeyStr)) || (Note[curNoteIndex + 1] == inputKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
-		Note[n + 1] = HitNote(inputKeyStr);
-		Note[n - 1] = HitNote(inputKeyStr);
+		Note[curNoteIndex + 1] = HitNote(inputKeyStr);
+		Note[curNoteIndex - 1] = HitNote(inputKeyStr);
 		sprintf(strScore, "%s", "★Great★");
 	}
 	else {
@@ -293,13 +293,13 @@ void CheckKey(string inputKey) {
 }
 
 // 2차원 배열을 아래로 떨어지게끔 해주는 함수
-void ShowNote(int n) {
+void ShowNote() {
 	for (int i = 0; i < 27; i++) {
 		if (28 - i >= 27) { // 히트 라인 밑으로 내려간 블록 전부다 노란색으로 변경.
 			SetColor(14);
 		}
 		else SetColor(15);
-		ScreenPrint(2, 28 - i, Note[n + i]);
+		ScreenPrint(2, 28 - i, Note[curNoteIndex + i]);
 	}
 }
 
@@ -410,7 +410,7 @@ void SyncMap()
 
 //초기 시간과 노트들 그리고 스코어 초기화
 void init() {
-	n = 0; // Note[]에 사용하는 인덱스
+	curNoteIndex = 0; 
 	nScore = 0; //
 	Control.MovTime = 52;
 	Control.OldTime = 0;
@@ -419,12 +419,6 @@ void init() {
 
 	RunningTime = 0;
 	NoteCheck();
-	Count.nXofA = 2;   //(2,29)
-	Count.nXofS = 8;
-	Count.nXofD = 14;
-	Count.nXofJ = 21;
-	Count.nXofK = 27;
-	Count.nXofL = 33;
 	SyncTime = 0;
 	PauseTime = 0;
 }
@@ -498,9 +492,9 @@ void Render(int nkey) {
 			if (Curtime - Control.OldTime > Control.MovTime)
 			{
 				Control.OldTime = Curtime;
-				n++;//노트가 저장된 배열의 인덱스를 증가
+				curNoteIndex++;//노트가 저장된 배열의 인덱스를 증가
 			}
-			ShowNote(n);
+			ShowNote();
 		}
 		if (RunningTime > 52000)
 		{
