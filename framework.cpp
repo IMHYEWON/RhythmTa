@@ -66,8 +66,8 @@ int Syncnum = 1;
 string star = "";
 int star_x = 2;
 string Note[ALLNOTE];
-string Sync1 = "화살표로 싱크를 조정하세요! : ";
-string Sync2 = "화살표로 싱크를 조정하세요! :";
+string Sync1 = "Press ← → to tune the Sync! : ";
+string Sync2 = "Press ← → to tune the Sync! : ";
 string Sync3 = "";
 
 //time
@@ -283,6 +283,7 @@ void ScoreMap() {
 void ReadyMap() {
 	ScreenPrint(15, 10, "유령의 축제");
 	ScreenPrint(2, 26, "□□□■■■□□□  ■■■□□□■■■");
+	ScreenPrint(11, 20, "Press c to Syncmap");
 	ScreenPrint(2, 27, "  A     S     D       J     K      L");
 	// 게임 조작 키 설명 
 }
@@ -291,7 +292,7 @@ void ReadyMap() {
 void ReadyMap1() {
 	SetColor(10);
 	ScreenPrint(10, 15, "Press Enter to Start");
-	ScreenPrint(15, 20, "싱크 조정");
+	
 	SetColor(15);
 }
 
@@ -316,7 +317,9 @@ void ResultMap()
 // 싱크화면 출력
 void SyncMap()
 {
-	ScreenPrint(15, 15, Sync2);
+	ScreenPrint(5, 15, Sync2);
+	
+	ScreenPrint(10, 20, "Press Enter to Start ");
 }
 
 
