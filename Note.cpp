@@ -402,7 +402,7 @@ void ResultMap()
 // 싱크화면 출력
 void SyncMap()
 {
-	ScreenPrint(5, 15, Sync2);
+	ScreenPrint(4, 15, "Press ← → to tune the Sync! : "+to_string(Syncnum));
 
 	ScreenPrint(10, 20, "Press Enter to Start ");
 }

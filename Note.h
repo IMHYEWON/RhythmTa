@@ -95,9 +95,6 @@ int nCombo = 0;
 
 // 싱크 변수
 int Syncnum = 1;
-string Sync1 = "Press ← → to tune the Sync! : ";
-string Sync2 = "Press ← → to tune the Sync! : ";
-string Sync3 = "";
 
 //*********************************************함수 선언**********************************************
 //키
