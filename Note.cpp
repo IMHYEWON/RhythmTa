@@ -478,12 +478,18 @@ void CheckKey(string inputKeyStr) {
 	if (Note[curNoteIndex] == nKeyStr) { // Perfect판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 500;
 		nCombo++;
+		if (nCombo >= 10) {
+			nScore += nCombo * 50;
+		}
 		Note[curNoteIndex] = HitNote(nKeyStr);
 		sprintf(strScore, "%s", "★Perfect★");
 	}
 	else if ((curNoteIndex > 0 && (Note[curNoteIndex - 1] == nKeyStr)) || (Note[curNoteIndex + 1] == nKeyStr)) { // Great 판별 구간의 Note와 입력한 KeyType가 일치하는 경우
 		nScore += 300;
 		nCombo++;
+		if (nCombo >= 10) {
+			nScore += nCombo * 30;
+		}
 		Note[curNoteIndex + 1] = HitNote(nKeyStr);
 		Note[curNoteIndex - 1] = HitNote(nKeyStr);
 		sprintf(strScore, "%s", "★Great★");
