@@ -79,6 +79,14 @@ int main(void) {
 					}
 					CheckKey(inputKeyStr);
 				}
+
+				if (Stage == RESULT) {
+					if (nKey == 'q') {
+						ScreenClear();
+						return 0;
+					}
+				}
+
 				if (Stage == SYNC)
 				{
 

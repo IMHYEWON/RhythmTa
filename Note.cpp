@@ -395,6 +395,8 @@ void ResultMap()
 	ScreenPrint(9, 15, "¦¦---------------------¦¥");
 	SetColor(10);
 	ScreenPrint(10, 18, "Press Enter to Restart");
+	SetColor(14);
+	ScreenPrint(13, 20, "Press q to Exit");
 	SetColor(15);
 }
 
