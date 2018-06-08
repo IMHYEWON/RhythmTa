@@ -1,3 +1,27 @@
+
+/*
+	void SoundSystem() : function for allocating and initializing Fmod systems.
+	void Play() : function for playing allocated songs.
+	void Map() : function for showing game map.
+	void ScoreMap() : function for showing score texts in the upper-right.
+	void ReadyMap() : function for showing ready map before game start.
+	void ReadyMap() : function for showing blinking texts in ready map.
+	void ResultMap() : function for showing score which player got. 
+	void init() : function for initializing time , notes and stage status.
+	void keyindex() : function for initializing keyindex.
+	void Noteindex() : function for initializing Notes.
+	void update() : function for updating time and changed information.
+	void Render() : function for changing stage mode , clearing the screen and caculating paly time.
+	string secondkkbhit() : function to input the second key, and this is function for the doubled notes.
+	sring getkeytype() : fuction for returnning the string of key notes.
+	int isTwokey() : function for checking the doubled notes.
+	void checkkey() : function for checking notes if note collision have occured or not.
+	void shownote() : function for showing the falling notes.
+	string HitNote() : function for changing the notes that was hit.
+	void ControlSync : function for changing the sync with LEFT or RIGHT key.
+	
+	
+*/
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<string.h>

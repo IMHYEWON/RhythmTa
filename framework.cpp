@@ -1,3 +1,27 @@
+/*
+		<Rhythm Ta>
+	Note.cpp : Sound , Map , Init , Note functions about game
+	Screen.cpp : Init , Flipping , Clear , Release , Print , setColor functions about screen
+	
+	This program is Rhythm game in C++.
+	Player can press the button to hit the falling notes.
+	If player hits the notes,  the score will increase.
+
+	-- Control Keys --
+	Enter : Button for starting game.
+	a , s , d , j , k , l : button for hitting notes.
+	p : button for pausing the game.
+	c : button for tuning the sync between music and falling notes.
+
+	We use wav file(location : RhythmTa/Festival_of_Ghost.wav)
+
+	original souce : https://github.com/horoyoii/RhythmGame
+
+	Released under the MIT license.
+	
+	Version - v 2.9.1
+	
+*/
 #define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<string.h>
@@ -45,7 +69,7 @@ int main(void) {
 						PauseTime += PauseEnd - PauseStart;
 						pChannel[0]->setPaused(false); // 현재 pChannel[0]에 있는 노래의 일시 정지를 해제한다.
 					}
-					else if (Stage == SYNC){ // 스테이지가 Sync 상태일 때 엔터를 누를 경우
+					else if (Stage == SYNC) { // 스테이지가 Sync 상태일 때 엔터를 누를 경우
 						NoteInit();
 						pChannel[0]->stop();
 						Play(1);
@@ -55,6 +79,8 @@ int main(void) {
 					else if (Stage == RESULT) {
 						break;
 					}
+					else
+						break;
 					Stage = RUNNING; // 엔터 입력 시 running시작 음악 호출
 				}
 
